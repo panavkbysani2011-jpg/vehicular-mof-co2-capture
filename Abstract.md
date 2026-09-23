@@ -1,9 +1,0 @@
-# Abstract
-
-Rising carbon dioxide from vehicles is a major contributor to climate change and to declining air quality. This study proposes and evaluates, through simulation, a conceptual onboard system that captures CO₂ directly from vehicle exhaust and stores it as a stable solid. Exhaust gas passes through a packed bed of diamine-appended Mg-MOF-74, a metal-organic framework that binds CO₂ by cooperative chemisorption, a bonding process that switches on sharply within the 5 to 15% concentration range typical of exhaust. Waste heat already present in the exhaust regenerates the sorbent, so the unit needs no electrical input and no moving parts. The released CO₂ is then bubbled into an onboard limewater (calcium hydroxide) tank, where it is fixed permanently as solid calcium carbonate. This avoids the compressed gas storage that has kept conventional capture from being practical on a vehicle.
-
-A time-stepped Python model of the chemistry was used to estimate performance over a representative 77 minute cycle. A 5 kg bed captures about 0.8 kg of CO₂ per cycle, and the regeneration energy of about 1060 kJ is supplied entirely by waste heat. At the default regeneration temperature, about 0.3 kg of this CO₂ is released per cycle and fixed as a weighable mass of calcium carbonate.
-
-The work is conceptual and literature-based, with all parameters drawn from published measurements. It shows that existing diamine-appended MOFs, combined with limewater mineralisation, form a thermodynamically coherent and physically integrable basis for mobile carbon capture, and it identifies the cycling, integration, and energy-accounting questions that physical testing should address next.
-
-**Keywords:** carbon capture, metal-organic framework, Mg-MOF-74, vehicle exhaust, limewater, calcium carbonate, temperature-swing adsorption.

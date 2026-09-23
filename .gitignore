@@ -17,7 +17,7 @@ Desktop.ini
 # Temporary analysis outputs
 graphify-out/
 
-# Large presentation posters and drafts (kept locally)
+# Presentation posters and PDFs
 *.pptx
 *.jpeg
 EquationFormattingGuide.pdf
@@ -26,3 +26,20 @@ Iris research paper.pdf
 Iris Abstract Final.docx
 LAMMPS_Connection_and_Starter.docx
 Synopsis.docx
+
+# Journal submission files and manuscripts (kept locally for journal portal)
+Submission_for_NHSJS/
+*.docx
+*.csl
+build_full_nhsjs_paper.py
+_pandoc_ready.md
+Abstract.md
+Acknowledgements.md
+Conclusion.md
+Declarations.md
+Introduction.md
+Literature_Review.md
+Nomenclature.md
+Results_and_Discussion.md
+Revised_Methodology.md
+CO2_Capture_Paper_FULL.md
