@@ -32,6 +32,8 @@ Submission_for_NHSJS/
 *.docx
 *.csl
 build_full_nhsjs_paper.py
+build_full_20page_manuscript.py
+check_pages.ps1
 _pandoc_ready.md
 Abstract.md
 Acknowledgements.md

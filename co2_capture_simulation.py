@@ -14,7 +14,7 @@ Run:  python co2_capture_simulation.py
 Outputs: prints a results summary and (if matplotlib is available) saves
          multi_cycle_results.png in the same folder.
 
-Authors: Advik Harihar and Panav K Bysani   Mentor: Yash Verma   10x International School, Mysore
+Authors: Advik Harihar and Panav K Bysani   Mentor: Yash Verma
 """
 
 import math

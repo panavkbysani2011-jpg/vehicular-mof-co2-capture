@@ -4,7 +4,6 @@
 
 **Authors:** Advik Harihar and Panav K Bysani  
 **Chemistry Mentor:** Yash Verma  
-**Affiliation:** 10x International School, Mysore, Karnataka, India  
 
 ---
 

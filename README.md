@@ -15,7 +15,6 @@ An open-access computational modeling framework and interactive web simulation f
 - **Panav K Bysani** (Co-Author, Student)
 - **Yash Verma** (Chemistry Mentor, M.Tech IIT Kharagpur, Chemistry Faculty)
 
-**Institution**: 10x International School, Mysore, Karnataka, India  
 **Project Presentation**: IRIS National Science Fair  
 
 ---

@@ -3,33 +3,45 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MOF Carbon Capture & Mineralization Simulator</title>
-    <!-- Chart.js CDN -->
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' https: data: 'unsafe-inline' 'unsafe-eval';">
+    <title>AERO-MOF: Onboard Vehicular Carbon Capture and Mineralization Platform</title>
+
+    <!-- Chart.js -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-    <!-- KaTeX for crisp mathematical formulas -->
+
+    <!-- KaTeX for Mathematics -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.8/dist/contrib/auto-render.min.js" onload="renderMathInElement(document.body);"></script>
-    <!-- Google Fonts Outfit, Inter, JetBrains Mono -->
+
+    <!-- Google Fonts: Inter and JetBrains Mono -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 
     <style>
         :root {
-            --bg-page: #f8fafc;
-            --panel-bg: #ffffff;
-            --panel-border: #e2e8f0;
-            --text-heading: #0f172a;
-            --text-body: #334155;
+            --bg-body: #070b14;
+            --bg-panel: #0e1726;
+            --bg-panel-elevated: #152238;
+            --border-panel: #1e2f4d;
+            --border-subtle: #243b61;
+            --text-heading: #f8fafc;
+            --text-body: #cbd5e1;
             --text-muted: #64748b;
-            --accent-blue: #2563eb;
-            --accent-blue-hover: #1d4ed8;
-            --accent-emerald: #059669;
-            --accent-amber: #d97706;
-            --accent-rose: #dc2626;
-            --font-main: 'Outfit', 'Inter', system-ui, sans-serif;
+            --accent-cyan: #06b6d4;
+            --accent-cyan-glow: rgba(6, 182, 212, 0.15);
+            --accent-emerald: #10b981;
+            --accent-emerald-glow: rgba(16, 185, 129, 0.15);
+            --accent-amber: #f59e0b;
+            --accent-rose: #f43f5e;
+            --accent-indigo: #6366f1;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
             --font-mono: 'JetBrains Mono', monospace;
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.35);
         }
 
         * {
@@ -38,1308 +50,1802 @@
             padding: 0;
         }
 
-        body {
-            background-color: var(--bg-page);
-            color: var(--text-body);
-            font-family: var(--font-main);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            font-size: 13.5px;
-            line-height: 1.5;
+        html {
+            scroll-behavior: smooth;
         }
 
-        /* Header */
-        header {
-            background: #ffffff;
-            border-bottom: 1px solid var(--panel-border);
-            padding: 12px 28px;
+        body {
+            background-color: var(--bg-body);
+            color: var(--text-body);
+            font-family: var(--font-sans);
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Top Navigation */
+        header.site-header {
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            background: rgba(7, 11, 20, 0.85);
+            backdrop-filter: blur(14px);
+            border-bottom: 1px solid var(--border-panel);
+            padding: 0 2rem;
+            height: 64px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            position: sticky;
-            top: 0;
-            z-index: 40;
         }
 
-        .brand-block {
+        .brand-logo {
             display: flex;
             align-items: center;
             gap: 12px;
+            text-decoration: none;
         }
 
         .brand-badge {
-            background: #0f172a;
-            color: #ffffff;
+            width: 32px;
+            height: 32px;
+            border-radius: var(--radius-sm);
+            background: linear-gradient(135deg, var(--accent-cyan), var(--accent-emerald));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            color: #070b14;
             font-family: var(--font-mono);
-            font-weight: 600;
             font-size: 13px;
-            padding: 5px 9px;
-            border-radius: 4px;
             letter-spacing: 0.5px;
         }
 
-        .brand-title {
-            font-size: 16px;
+        .brand-text {
             font-weight: 700;
+            font-size: 16px;
             color: var(--text-heading);
-            letter-spacing: -0.2px;
+            letter-spacing: -0.3px;
         }
 
         .brand-sub {
-            font-size: 12px;
-            color: var(--text-muted);
+            font-size: 11px;
+            color: var(--accent-cyan);
+            font-family: var(--font-mono);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
         }
 
-        .header-meta {
+        nav.nav-links {
             display: flex;
-            align-items: center;
-            gap: 14px;
+            gap: 6px;
         }
 
-        .author-tag {
-            font-size: 12px;
+        nav.nav-links a {
             color: var(--text-muted);
-            border-right: 1px solid var(--panel-border);
-            padding-right: 14px;
+            text-decoration: none;
+            padding: 8px 14px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s ease;
         }
 
-        .author-tag strong {
+        nav.nav-links a:hover,
+        nav.nav-links a.active {
             color: var(--text-heading);
-            font-weight: 600;
+            background: var(--bg-panel-elevated);
         }
 
         .header-actions {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 12px;
         }
 
-        .btn-outline {
-            background: #ffffff;
-            border: 1px solid var(--panel-border);
-            color: var(--text-heading);
-            font-size: 12px;
-            font-weight: 600;
-            padding: 6px 12px;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: all 0.15s ease;
+        .security-badge {
             display: flex;
             align-items: center;
+            gap: 8px;
+            padding: 6px 12px;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 9999px;
+            font-size: 11px;
+            font-family: var(--font-mono);
+            color: var(--accent-emerald);
+        }
+
+        .status-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 50%;
+            background: var(--accent-emerald);
+            box-shadow: 0 0 8px var(--accent-emerald);
+        }
+
+        /* Container */
+        .container {
+            max-width: 1320px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Hero Section */
+        section.hero-section {
+            padding: 4.5rem 0 3rem 0;
+            border-bottom: 1px solid var(--border-panel);
+            background: radial-gradient(circle at 50% 0%, rgba(6, 182, 212, 0.08) 0%, transparent 60%);
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 12px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            border-radius: 9999px;
+            font-size: 12px;
+            font-family: var(--font-mono);
+            color: var(--accent-cyan);
+            margin-bottom: 1.25rem;
+        }
+
+        .hero-title {
+            font-size: 2.75rem;
+            font-weight: 800;
+            line-height: 1.15;
+            color: var(--text-heading);
+            margin-bottom: 1.25rem;
+            letter-spacing: -0.8px;
+            max-width: 900px;
+        }
+
+        .hero-title span.highlight {
+            color: var(--accent-cyan);
+        }
+
+        .hero-description {
+            font-size: 1.1rem;
+            color: var(--text-body);
+            max-width: 820px;
+            margin-bottom: 2.5rem;
+            line-height: 1.7;
+        }
+
+        .hero-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            border-radius: var(--radius-md);
+            padding: 1.25rem 1.5rem;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, border-color 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--border-subtle);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: linear-gradient(90deg, var(--accent-cyan), transparent);
+        }
+
+        .stat-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.6px;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            font-family: var(--font-mono);
+            letter-spacing: -0.5px;
+        }
+
+        .stat-subtext {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Section Commons */
+        section {
+            padding: 4rem 0;
+            border-bottom: 1px solid var(--border-panel);
+        }
+
+        .section-header {
+            margin-bottom: 2.5rem;
+        }
+
+        .section-tag {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-family: var(--font-mono);
+            color: var(--accent-cyan);
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .section-title {
+            font-size: 1.85rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            letter-spacing: -0.4px;
+            margin-bottom: 8px;
+        }
+
+        .section-subtitle {
+            font-size: 0.95rem;
+            color: var(--text-muted);
+            max-width: 720px;
+        }
+
+        /* 3-Stage Architecture */
+        .stage-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .stage-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            border-radius: var(--radius-md);
+            padding: 1.75rem;
+            display: flex;
+            flex-direction: column;
+            box-shadow: var(--shadow-card);
+            position: relative;
+        }
+
+        .stage-number {
+            font-size: 12px;
+            font-family: var(--font-mono);
+            font-weight: 600;
+            color: var(--accent-cyan);
+            background: var(--accent-cyan-glow);
+            padding: 3px 10px;
+            border-radius: 9999px;
+            display: inline-block;
+            align-self: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .stage-title {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            margin-bottom: 0.75rem;
+        }
+
+        .stage-description {
+            font-size: 13px;
+            color: var(--text-body);
+            line-height: 1.6;
+            margin-bottom: 1.25rem;
+            flex-grow: 1;
+        }
+
+        .stage-specs {
+            background: var(--bg-body);
+            border: 1px solid var(--border-panel);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            font-family: var(--font-mono);
+            font-size: 11.5px;
+            display: flex;
+            flex-direction: column;
             gap: 6px;
         }
 
-        .btn-outline:hover {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
+        .stage-spec-item {
+            display: flex;
+            justify-content: space-between;
         }
 
-        /* App Layout */
-        .app-container {
-            display: flex;
-            flex: 1;
-            overflow: hidden;
+        .stage-spec-item span:first-child {
+            color: var(--text-muted);
         }
 
-        /* Sidebar Control Panel */
-        .sidebar {
-            width: 350px;
-            background: #ffffff;
-            border-right: 1px solid var(--panel-border);
-            padding: 20px;
-            overflow-y: auto;
-            flex-shrink: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 18px;
+        .stage-spec-item span:last-child {
+            color: var(--text-heading);
+            font-weight: 500;
+        }
+
+        .schematic-wrapper {
+            margin-top: 2rem;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .schematic-img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-panel);
+        }
+
+        .schematic-caption {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 10px;
+            font-style: italic;
+        }
+
+        /* Simulator Layout */
+        .simulator-layout {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            gap: 1.5rem;
+            align-items: start;
+        }
+
+        .controls-panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-card);
+            position: sticky;
+            top: 80px;
         }
 
         .panel-heading {
-            font-size: 11.5px;
-            font-weight: 700;
+            font-size: 13px;
             text-transform: uppercase;
-            letter-spacing: 0.6px;
-            color: var(--text-muted);
-            margin-bottom: 12px;
-            padding-bottom: 4px;
-            border-bottom: 1px solid #f1f5f9;
+            font-family: var(--font-mono);
+            color: var(--text-heading);
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            margin-bottom: 1.25rem;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-panel);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        .param-field {
-            margin-bottom: 14px;
+        .control-group {
+            margin-bottom: 1.25rem;
         }
 
-        .param-label {
+        .control-header {
             display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: baseline;
+            margin-bottom: 6px;
+        }
+
+        .control-title {
             font-size: 12.5px;
             font-weight: 500;
             color: var(--text-heading);
-            margin-bottom: 5px;
         }
 
-        .param-val {
-            font-family: var(--font-mono);
+        .control-badge {
             font-size: 12px;
+            font-family: var(--font-mono);
             font-weight: 600;
-            color: var(--accent-blue);
+            color: var(--accent-cyan);
+            background: var(--bg-panel-elevated);
+            padding: 2px 8px;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border-subtle);
         }
 
-        /* Custom Range Slider */
         input[type="range"] {
             width: 100%;
-            height: 5px;
+            height: 6px;
             border-radius: 3px;
-            background: #e2e8f0;
+            background: var(--border-panel);
             outline: none;
             -webkit-appearance: none;
+            appearance: none;
             cursor: pointer;
         }
 
         input[type="range"]::-webkit-slider-thumb {
             -webkit-appearance: none;
+            appearance: none;
             width: 16px;
             height: 16px;
             border-radius: 50%;
-            background: var(--accent-blue);
+            background: var(--accent-cyan);
             cursor: pointer;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
-            transition: background 0.15s;
+            box-shadow: 0 0 8px rgba(6, 182, 212, 0.5);
+            border: 2px solid #0e1726;
+            transition: transform 0.1s ease;
         }
 
         input[type="range"]::-webkit-slider-thumb:hover {
-            background: var(--accent-blue-hover);
+            transform: scale(1.15);
         }
 
-        .preset-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
+        .control-limits {
+            display: flex;
+            justify-content: space-between;
+            font-size: 10.5px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            margin-top: 3px;
+        }
+
+        .quick-presets {
+            display: flex;
             gap: 6px;
             margin-top: 6px;
         }
 
-        .btn-preset {
-            background: #f8fafc;
-            border: 1px solid var(--panel-border);
+        .preset-btn {
+            background: var(--bg-panel-elevated);
+            border: 1px solid var(--border-panel);
             color: var(--text-body);
-            font-size: 11.5px;
-            font-weight: 500;
-            padding: 6px 8px;
-            border-radius: 4px;
+            font-size: 11px;
+            font-family: var(--font-mono);
+            padding: 3px 8px;
+            border-radius: var(--radius-sm);
             cursor: pointer;
-            text-align: center;
-            transition: all 0.15s;
+            transition: all 0.15s ease;
         }
 
-        .btn-preset.active {
-            background: #eff6ff;
-            border-color: #bfdbfe;
-            color: var(--accent-blue);
-            font-weight: 600;
-        }
-
-        /* Packaging & Chassis Card */
-        .packaging-summary {
-            background: #f8fafc;
-            border: 1px solid var(--panel-border);
-            border-radius: 6px;
-            padding: 12px;
-            font-size: 12px;
-        }
-
-        .pkg-item {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 5px;
-            color: var(--text-muted);
-        }
-
-        .pkg-item:last-child { margin-bottom: 0; }
-        .pkg-val {
-            font-family: var(--font-mono);
-            font-weight: 600;
+        .preset-btn:hover {
+            border-color: var(--accent-cyan);
             color: var(--text-heading);
         }
 
-        /* Tooltip styling */
-        .has-tooltip {
-            position: relative;
-            cursor: help;
-        }
-
-        .tooltip-text {
-            visibility: hidden;
-            width: 210px;
-            background-color: #0f172a;
-            color: #ffffff;
-            text-align: center;
-            border-radius: 5px;
-            padding: 7px 10px;
-            position: absolute;
-            z-index: 50;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.2s;
-            font-size: 11px;
-            font-weight: 400;
-            line-height: 1.35;
-            pointer-events: none;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .tooltip-text::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #0f172a transparent transparent transparent;
-        }
-
-        .has-tooltip:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        /* Main Stage */
-        .main-stage {
-            flex: 1;
-            padding: 20px 24px;
-            overflow-y: auto;
+        /* Simulator Analytics Area */
+        .analytics-area {
             display: flex;
             flex-direction: column;
-            gap: 20px;
+            gap: 1.5rem;
         }
 
-        /* Metric Cards Grid */
-        .metrics-grid {
+        .kpi-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(175px, 1fr));
-            gap: 12px;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
         }
 
-        .metric-card {
-            background: #ffffff;
-            border: 1px solid var(--panel-border);
-            border-radius: 6px;
-            padding: 14px;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-            transition: box-shadow 0.15s, border-color 0.15s;
+        .kpi-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            border-radius: var(--radius-md);
+            padding: 1rem 1.25rem;
+            box-shadow: var(--shadow-card);
         }
 
-        .metric-card:hover {
-            border-color: #cbd5e1;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
-        }
-
-        .metric-label {
-            font-size: 11px;
-            font-weight: 600;
+        .kpi-label {
+            font-size: 10.5px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: var(--text-muted);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        .metric-num {
             font-family: var(--font-mono);
-            font-size: 22px;
-            font-weight: 700;
-            color: var(--text-heading);
-            margin: 6px 0 2px 0;
-        }
-
-        .metric-sub {
-            font-size: 11.5px;
             color: var(--text-muted);
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
         }
 
-        /* View Toggle Bar */
-        .view-controls {
+        .kpi-val {
+            font-size: 1.45rem;
+            font-weight: 700;
+            font-family: var(--font-mono);
+            color: var(--text-heading);
+            letter-spacing: -0.5px;
+        }
+
+        .kpi-val.highlight-cyan { color: var(--accent-cyan); }
+        .kpi-val.highlight-emerald { color: var(--accent-emerald); }
+        .kpi-val.highlight-amber { color: var(--accent-amber); }
+        .kpi-val.highlight-indigo { color: var(--accent-indigo); }
+
+        .kpi-sub {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        /* Chart View Controls */
+        .chart-view-bar {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--panel-border);
-            padding-bottom: 8px;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            border-radius: var(--radius-md);
+            padding: 8px 14px;
         }
 
-        .tab-btn-group {
+        .view-tabs {
             display: flex;
             gap: 6px;
         }
 
         .tab-btn {
-            background: #ffffff;
-            border: 1px solid var(--panel-border);
+            background: transparent;
+            border: 1px solid transparent;
             color: var(--text-muted);
             font-size: 12px;
-            font-weight: 600;
-            padding: 5px 12px;
-            border-radius: 4px;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: var(--radius-sm);
             cursor: pointer;
-            transition: all 0.15s;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn:hover {
+            color: var(--text-heading);
         }
 
         .tab-btn.active {
-            background: #0f172a;
-            color: #ffffff;
-            border-color: #0f172a;
-        }
-
-        /* Charts Container */
-        .charts-grid-4 {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-        }
-
-        .charts-grid-2 {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 16px;
-        }
-
-        .chart-panel {
-            background: #ffffff;
-            border: 1px solid var(--panel-border);
-            border-radius: 6px;
-            padding: 16px;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .chart-panel-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            border-left: 4px solid var(--accent-blue);
-            padding-left: 10px;
-        }
-
-        .chart-heading {
-            font-size: 13.5px;
+            background: var(--bg-panel-elevated);
+            color: var(--accent-cyan);
+            border-color: var(--border-subtle);
             font-weight: 600;
-            color: var(--text-heading);
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
         }
 
-        .chart-caption {
-            font-size: 11px;
-            color: var(--text-muted);
+        /* Chart Grid */
+        .charts-container {
+            display: grid;
+            gap: 1.25rem;
+        }
+
+        .grid-4 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .grid-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .grid-6 {
+            grid-template-columns: repeat(2, 1fr);
         }
 
         .chart-box {
-            position: relative;
-            height: 250px;
-            width: 100%;
+            background: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            border-radius: var(--radius-md);
+            padding: 1.25rem;
+            box-shadow: var(--shadow-card);
+            display: flex;
+            flex-direction: column;
         }
 
-        /* Table Card */
-        .table-panel {
-            background: #ffffff;
-            border: 1px solid var(--panel-border);
-            border-radius: 6px;
-            padding: 16px;
-            overflow-x: auto;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 12px;
-            text-align: right;
-        }
-
-        th, td {
-            padding: 9px 12px;
-            border-bottom: 1px solid #f1f5f9;
-        }
-
-        th {
-            background: #f8fafc;
-            color: var(--text-muted);
-            font-size: 11px;
+        .chart-box-title {
+            font-size: 13px;
             font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-
-        th:first-child, td:first-child { text-align: left; }
-
-        tr.row-selected {
-            background: #eff6ff;
-            font-weight: 600;
-            color: var(--accent-blue);
-        }
-
-        tr:hover:not(.row-selected) {
-            background: #f8fafc;
-        }
-
-        /* Modal Dialog */
-        .modal-backdrop {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(15, 23, 42, 0.45);
-            backdrop-filter: blur(4px);
-            display: none;
-            justify-content: center;
-            align-items: center;
-            z-index: 100;
-            padding: 20px;
-        }
-
-        .modal-body {
-            background: #ffffff;
-            border: 1px solid var(--panel-border);
-            border-radius: 8px;
-            width: 100%;
-            max-width: 820px;
-            max-height: 85vh;
-            overflow-y: auto;
-            padding: 24px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-        }
-
-        .modal-top {
+            color: var(--text-heading);
+            margin-bottom: 2px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--panel-border);
-            padding-bottom: 10px;
-            margin-bottom: 16px;
         }
 
-        .modal-heading {
-            font-size: 16px;
-            font-weight: 700;
-            color: var(--text-heading);
-        }
-
-        .btn-dismiss {
-            background: transparent;
-            border: none;
-            font-size: 20px;
+        .chart-box-sub {
+            font-size: 11px;
             color: var(--text-muted);
-            cursor: pointer;
-        }
-
-        .btn-dismiss:hover { color: var(--text-heading); }
-
-        .eq-block {
-            background: #f8fafc;
-            border: 1px solid var(--panel-border);
-            border-radius: 6px;
-            padding: 14px;
             margin-bottom: 12px;
         }
 
-        .eq-label {
-            font-size: 12px;
-            font-weight: 600;
-            color: var(--accent-blue);
-            margin-bottom: 4px;
+        .chart-canvas-wrapper {
+            position: relative;
+            height: 240px;
+            width: 100%;
         }
 
-        .eq-render {
-            font-size: 14px;
-            margin: 8px 0;
+        /* Packaging & Feasibility Box */
+        .chassis-box {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.25rem;
+            box-shadow: var(--shadow-card);
+        }
+
+        .chassis-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chassis-label {
+            font-size: 11px;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            text-transform: uppercase;
+        }
+
+        .chassis-val {
+            font-size: 1.25rem;
+            font-weight: 600;
+            font-family: var(--font-mono);
+            color: var(--text-heading);
+        }
+
+        .chassis-status {
+            font-size: 11px;
+            margin-top: 4px;
+            color: var(--accent-emerald);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* Sensitivity Table */
+        .table-panel {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-card);
             overflow-x: auto;
         }
 
-        .eq-desc {
-            font-size: 11px;
-            color: var(--text-muted);
+        table.sensitivity-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+            font-family: var(--font-mono);
         }
 
-        @media (max-width: 950px) {
-            .app-container { flex-direction: column; }
-            .sidebar { width: 100%; border-right: none; border-bottom: 1px solid var(--panel-border); }
-            .charts-grid-4, .charts-grid-2 { grid-template-columns: 1fr; }
+        table.sensitivity-table th {
+            text-align: left;
+            padding: 10px 14px;
+            background: var(--bg-panel-elevated);
+            color: var(--text-heading);
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-panel);
+            font-size: 11.5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        table.sensitivity-table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-panel);
+            color: var(--text-body);
+        }
+
+        table.sensitivity-table tr.active-sweep-row {
+            background: rgba(6, 182, 212, 0.12);
+            color: var(--accent-cyan);
+            font-weight: 600;
+        }
+
+        table.sensitivity-table tr:hover:not(.active-sweep-row) {
+            background: var(--bg-panel-elevated);
+        }
+
+        /* Math Section */
+        .math-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .math-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            border-radius: var(--radius-md);
+            padding: 1.5rem;
+            box-shadow: var(--shadow-card);
+        }
+
+        .math-title {
+            font-size: 1.05rem;
+            font-weight: 600;
+            color: var(--text-heading);
+            margin-bottom: 6px;
+        }
+
+        .math-desc {
+            font-size: 12.5px;
+            color: var(--text-muted);
+            margin-bottom: 14px;
+            line-height: 1.5;
+        }
+
+        .math-formula-box {
+            background: var(--bg-body);
+            border: 1px solid var(--border-panel);
+            border-radius: var(--radius-sm);
+            padding: 14px;
+            text-align: center;
+            overflow-x: auto;
+            margin-bottom: 12px;
+        }
+
+        .math-notes {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            line-height: 1.5;
+        }
+
+        /* Team Section */
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .team-card {
+            background: var(--bg-panel);
+            border: 1px solid var(--border-panel);
+            border-radius: var(--radius-md);
+            padding: 1.75rem;
+            box-shadow: var(--shadow-card);
+            position: relative;
+        }
+
+        .team-role {
+            font-size: 11px;
+            text-transform: uppercase;
+            font-family: var(--font-mono);
+            color: var(--accent-cyan);
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .team-name {
+            font-size: 1.35rem;
+            font-weight: 700;
+            color: var(--text-heading);
+            margin-bottom: 12px;
+        }
+
+        .team-bio {
+            font-size: 13px;
+            color: var(--text-body);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        footer.site-footer {
+            background: var(--bg-panel);
+            border-top: 1px solid var(--border-panel);
+            padding: 3rem 0 2rem 0;
+            margin-top: 3rem;
+        }
+
+        .footer-grid {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--border-panel);
+        }
+
+        .footer-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 16px;
+        }
+
+        .footer-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-size: 13px;
+            transition: color 0.2s;
+        }
+
+        .footer-links a:hover {
+            color: var(--text-heading);
+        }
+
+        .footer-bottom {
+            padding-top: 1.5rem;
+            font-size: 12px;
+            color: var(--text-muted);
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--font-mono);
+        }
+
+        /* Responsive */
+        @media (max-width: 1024px) {
+            .simulator-layout { grid-template-columns: 1fr; }
+            .hero-stats-grid { grid-template-columns: repeat(2, 1fr); }
+            .stage-grid { grid-template-columns: 1fr; }
+            .team-grid { grid-template-columns: 1fr; }
+            .kpi-row { grid-template-columns: repeat(2, 1fr); }
+            .chassis-box { grid-template-columns: repeat(2, 1fr); }
+            .math-grid { grid-template-columns: 1fr; }
+        }
+
+        @media (max-width: 640px) {
+            .hero-stats-grid { grid-template-columns: 1fr; }
+            .kpi-row { grid-template-columns: 1fr; }
+            .chassis-box { grid-template-columns: 1fr; }
+            .grid-4, .grid-2, .grid-6 { grid-template-columns: 1fr; }
+            nav.nav-links { display: none; }
         }
     </style>
 </head>
 <body>
 
-    <!-- Header -->
-    <header>
-        <div class="brand-block">
-            <span class="brand-badge">Mg-MOF-74</span>
+    <!-- Header Navigation -->
+    <header class="site-header">
+        <a href="#hero" class="brand-logo">
+            <div class="brand-badge">MOF</div>
             <div>
-                <div class="brand-title">Vehicular Exhaust CO₂ Capture & Mineralization Simulator</div>
-                <div class="brand-sub">Integrated Temperature-Swing Adsorption & Limewater Sequestration Model</div>
+                <div class="brand-text">AERO-MOF</div>
+                <span class="brand-sub">Clean Carbon Platform</span>
             </div>
-        </div>
-        <div class="header-meta">
-            <div class="header-actions">
-                <button class="btn-outline" onclick="openEquationsModal()">
-                    <span>∑</span> Governing Equations
-                </button>
+        </a>
+
+        <nav class="nav-links">
+            <a href="#hero">Overview</a>
+            <a href="#architecture">Architecture</a>
+            <a href="#simulator">Simulator</a>
+            <a href="#mathematics">Formulations</a>
+            <a href="#chassis">Engineering</a>
+            <a href="#team">Team</a>
+        </nav>
+
+        <div class="header-actions">
+            <div class="security-badge" title="Content Security Policy enforced, client-side execution, zero external data collection">
+                <span class="status-dot"></span>
+                <span>Sandboxed Engine</span>
             </div>
         </div>
     </header>
 
-    <!-- Main App Container -->
-    <div class="app-container">
-        <!-- Sidebar Controls -->
-        <aside class="sidebar">
-            <div>
-                <div class="panel-heading">1. Adsorption Parameters</div>
-                
-                <div class="param-field">
-                    <div class="param-label has-tooltip">
-                        <span>MOF Sorbent Mass (\(m_{\text{MOF}}\))</span>
-                        <span class="tooltip-text">Total weight of the diamine-appended Mg-MOF-74 adsorbent bed.</span>
-                        <span id="txt_m_mof" class="param-val">5.00 kg</span>
-                    </div>
-                    <input type="range" id="sl_m_mof" min="0.5" max="10.0" step="0.1" value="5.0">
-                </div>
-
-                <div class="param-field">
-                    <div class="param-label has-tooltip">
-                        <span>Exhaust CO₂ (\(C_{\text{CO}_2}\))</span>
-                        <span class="tooltip-text">Volumetric concentration of CO₂ entering from vehicle exhaust.</span>
-                        <span id="txt_c_co2" class="param-val">13.5%</span>
-                    </div>
-                    <input type="range" id="sl_c_co2" min="2.0" max="20.0" step="0.1" value="13.5">
-                </div>
-
-                <div class="param-field">
-                    <div class="param-label has-tooltip">
-                        <span>Scrubbing Time (\(t\))</span>
-                        <span class="tooltip-text">Active duration of continuous exhaust capture phase.</span>
-                        <span id="txt_scrub" class="param-val">77 min</span>
-                    </div>
-                    <input type="range" id="sl_scrub" min="10" max="180" step="1" value="77">
-                </div>
+    <!-- Hero Section -->
+    <section id="hero" class="hero-section">
+        <div class="container">
+            <div class="hero-tag">
+                <span>Vehicular Carbon Capture & Permanent Mineralization</span>
             </div>
+            <h1 class="hero-title">
+                Onboard Carbon Capture via <span class="highlight">Mg-MOF-74</span> & Limewater Calcite Mineralization
+            </h1>
+            <p class="hero-description">
+                A passive point-of-origin mobile decarbonization system that eliminates compressed-gas cylinders by coupling cooperative diamine-appended metal-organic frameworks with engine exhaust waste heat regeneration and ambient aqueous mineralization.
+            </p>
 
-            <div>
-                <div class="panel-heading">2. Thermal Regeneration</div>
-                
-                <div class="param-field">
-                    <div class="param-label has-tooltip">
-                        <span>Regeneration Temp (\(T\))</span>
-                        <span class="tooltip-text">Peak bed temperature supplied passively via coaxial exhaust heat.</span>
-                        <span id="txt_t_regen" class="param-val">85.0 °C</span>
-                    </div>
-                    <input type="range" id="sl_t_regen" min="40" max="150" step="0.5" value="85.0">
+            <div class="hero-stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Single-Cycle CO2 Captured</div>
+                    <div class="stat-value" id="hero-co2">0.805 kg</div>
+                    <div class="stat-subtext">95.4% equilibrium saturation</div>
                 </div>
-
-                <div class="preset-buttons">
-                    <button class="btn-preset active" id="btn_85" onclick="setTemperature(85)">85°C (Conservative)</button>
-                    <button class="btn-preset" id="btn_110" onclick="setTemperature(110)">110°C (High Yield)</button>
+                <div class="stat-card">
+                    <div class="stat-label">Regeneration Energy Duty</div>
+                    <div class="stat-value" id="hero-energy">1063 kJ</div>
+                    <div class="stat-subtext">100% passive exhaust waste heat</div>
                 </div>
-            </div>
-
-            <div>
-                <div class="panel-heading">3. Limewater Slurry Storage</div>
-                
-                <div class="param-field">
-                    <div class="param-label has-tooltip">
-                        <span>Slurry Volume (\(V\))</span>
-                        <span class="tooltip-text">Aqueous 20 wt% Ca(OH)₂ suspension volume in onboard bubbler tank.</span>
-                        <span id="txt_slurry" class="param-val">30 L</span>
-                    </div>
-                    <input type="range" id="sl_slurry" min="5" max="60" step="1" value="30">
+                <div class="stat-card">
+                    <div class="stat-label">Calcite Precipitated</div>
+                    <div class="stat-value" id="hero-calcite">1.678 kg</div>
+                    <div class="stat-subtext">Solid CaCO3 permanent sink</div>
                 </div>
-            </div>
-
-            <div>
-                <div class="panel-heading">4. Packaging & Chassis Impact</div>
-                <div class="packaging-summary">
-                    <div class="pkg-item has-tooltip">
-                        <span>MOF Bed Volume:</span>
-                        <span class="tooltip-text">Bulk volume occupied by packed framework in exhaust line.</span>
-                        <span id="ui_vbed" class="pkg-val">5.56 L</span>
-                    </div>
-                    <div class="pkg-item has-tooltip">
-                        <span>Cylinder (D × L):</span>
-                        <span class="tooltip-text">Cylindrical housing dimensions inside exhaust pipe envelope.</span>
-                        <span id="ui_dims" class="pkg-val">15.0 × 31.4 cm</span>
-                    </div>
-                    <div class="pkg-item has-tooltip">
-                        <span>Exhaust Back-pressure:</span>
-                        <span class="tooltip-text">Added engine back-pressure (OEM allowable limit: < 5.0 kPa).</span>
-                        <span id="ui_dp" class="pkg-val">0.68 kPa</span>
-                    </div>
-                    <div class="pkg-item has-tooltip">
-                        <span>Total Wet Mass:</span>
-                        <span class="tooltip-text">Complete mass including sorbent, slurry, and casing.</span>
-                        <span id="ui_mass" class="pkg-val">46.0 kg</span>
-                    </div>
-                    <div class="pkg-item has-tooltip">
-                        <span>Fuel Penalty Est.:</span>
-                        <span class="tooltip-text">Estimated fuel consumption penalty based on added vehicular mass.</span>
-                        <span id="ui_penalty" class="pkg-val">3.07%</span>
-                    </div>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Main Content Area -->
-        <main class="main-stage">
-            <!-- Metric Stat Cards -->
-            <div class="metrics-grid">
-                <div class="metric-card has-tooltip">
-                    <span class="tooltip-text">Theoretical maximum CO₂ the bed can hold under continuous saturation.</span>
-                    <div class="metric-label">Max Theoretical Capacity</div>
-                    <div class="metric-num" id="card_q_eq">0.844 kg</div>
-                    <div class="metric-sub">q_eq at current exhaust CO₂</div>
-                </div>
-
-                <div class="metric-card has-tooltip">
-                    <span class="tooltip-text">Actual CO₂ adsorbed on the MOF bed at the end of the scrubbing duration.</span>
-                    <div class="metric-label">CO₂ Captured on Bed</div>
-                    <div class="metric-num" id="card_q_t" style="color: var(--accent-blue);">0.805 kg</div>
-                    <div class="metric-sub" id="card_q_pct">95.4% of equilibrium</div>
-                </div>
-
-                <div class="metric-card has-tooltip">
-                    <span class="tooltip-text">Gaseous CO₂ desorbed upon thermal regeneration at the selected temperature.</span>
-                    <div class="metric-label">CO₂ Desorbed / Cycle</div>
-                    <div class="metric-num" id="card_released">0.323 kg</div>
-                    <div class="metric-sub" id="card_sigma">Release σ = 40.1%</div>
-                </div>
-
-                <div class="metric-card has-tooltip">
-                    <span class="tooltip-text">Dense calcium carbonate precipitate formed permanently in the limewater slurry.</span>
-                    <div class="metric-label">Solid CaCO₃ Formed</div>
-                    <div class="metric-num" id="card_caco3" style="color: var(--accent-emerald);">0.735 kg</div>
-                    <div class="metric-sub">Inert solid calcite</div>
-                </div>
-
-                <div class="metric-card has-tooltip">
-                    <span class="tooltip-text">Total sensible + desorption thermal energy supplied passively from waste exhaust.</span>
-                    <div class="metric-label">Regeneration Heat</div>
-                    <div class="metric-num" id="card_energy" style="color: var(--accent-amber);">1063 kJ</div>
-                    <div class="metric-sub" id="card_intensity">3290 kJ/kg CO₂</div>
-                </div>
-
-                <div class="metric-card has-tooltip">
-                    <span class="tooltip-text">Number of full drive cycles possible before the 20 wt% slurry is depleted.</span>
-                    <div class="metric-label">Slurry Service Life</div>
-                    <div class="metric-num" id="card_cycles">12.1 cycles</div>
-                    <div class="metric-sub">Before slurry replenishment</div>
-                </div>
-            </div>
-
-            <!-- View Controls -->
-            <div class="view-controls">
-                <span style="font-weight: 600; font-size: 13px; color: var(--text-heading);">Simulation Analytics & Visualization</span>
-                <div class="tab-btn-group">
-                    <button class="tab-btn active" id="btn_mode_4grid" onclick="switchChartMode('4grid')">4-Chart Focused Grid</button>
-                    <button class="tab-btn" id="btn_mode_dual" onclick="switchChartMode('dual')">Dual-Axis Engineering Charts</button>
-                    <button class="tab-btn" id="btn_mode_all" onclick="switchChartMode('all')">Show All 6 Charts</button>
-                </div>
-            </div>
-
-            <!-- 4 Focused Charts Container -->
-            <div id="container_4grid" class="charts-grid-4">
-                <div class="chart-panel">
-                    <div class="chart-panel-header" style="border-left-color: #2563eb;">
-                        <div>
-                            <div class="chart-heading">1. Adsorbed Mass vs. Time</div>
-                            <div class="chart-caption">Dynamic CO₂ loading curve q(t) up to cycle cutoff</div>
-                        </div>
-                    </div>
-                    <div class="chart-box">
-                        <canvas id="chartAdsorption"></canvas>
-                    </div>
-                </div>
-
-                <div class="chart-panel">
-                    <div class="chart-panel-header" style="border-left-color: #059669;">
-                        <div>
-                            <div class="chart-heading">2. CaCO₃ Produced vs. Time</div>
-                            <div class="chart-caption">Stoichiometric permanent calcite yield potential</div>
-                        </div>
-                    </div>
-                    <div class="chart-box">
-                        <canvas id="chartCaCO3"></canvas>
-                    </div>
-                </div>
-
-                <div class="chart-panel">
-                    <div class="chart-panel-header" style="border-left-color: #dc2626;">
-                        <div>
-                            <div class="chart-heading">3. Energy Consumption vs. Temperature</div>
-                            <div class="chart-caption">Specific energy intensity (kJ / kg CO₂ released)</div>
-                        </div>
-                    </div>
-                    <div class="chart-box">
-                        <canvas id="chartEnergy"></canvas>
-                    </div>
-                </div>
-
-                <div class="chart-panel">
-                    <div class="chart-panel-header" style="border-left-color: #7c3aed;">
-                        <div>
-                            <div class="chart-heading">4. CO₂ Desorbed vs. Temperature</div>
-                            <div class="chart-caption">Thermally liberated CO₂ mass per regeneration event</div>
-                        </div>
-                    </div>
-                    <div class="chart-box">
-                        <canvas id="chartRelease"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Dual-Axis Comparison Charts Container -->
-            <div id="container_dual" class="charts-grid-2" style="display: none;">
-                <div class="chart-panel">
-                    <div class="chart-panel-header" style="border-left-color: #2563eb;">
-                        <div>
-                            <div class="chart-heading">Breakthrough Adsorption Kinetics (Dual-Axis)</div>
-                            <div class="chart-caption">Simultaneous CO₂ bed loading and equivalent CaCO₃ potential</div>
-                        </div>
-                    </div>
-                    <div class="chart-box">
-                        <canvas id="canvasKineticsDual"></canvas>
-                    </div>
-                </div>
-
-                <div class="chart-panel">
-                    <div class="chart-panel-header" style="border-left-color: #d97706;">
-                        <div>
-                            <div class="chart-heading">Thermal Desorption & Operating Window (Dual-Axis)</div>
-                            <div class="chart-caption">Sigmoid release fraction σ(T) vs. Specific energy duty</div>
-                        </div>
-                    </div>
-                    <div class="chart-box">
-                        <canvas id="canvasThermoDual"></canvas>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Sensitivity Table -->
-            <div class="table-panel">
-                <div class="panel-heading" style="border:none; margin-bottom: 6px;">
-                    Multicycle Temperature Sensitivity Matrix
-                </div>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Regen Temp (\(T\))</th>
-                            <th>Release (\(\sigma\))</th>
-                            <th>CO₂ Released</th>
-                            <th>CaCO₃ Produced</th>
-                            <th>Sensible Heat</th>
-                            <th>Desorption Heat</th>
-                            <th>Total Energy</th>
-                            <th>Energy Intensity</th>
-                            <th>Waste Heat Time</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tbl_body">
-                        <!-- Populated by JavaScript -->
-                    </tbody>
-                </table>
-            </div>
-        </main>
-    </div>
-
-    <!-- Equations Modal Dialog -->
-    <div class="modal-backdrop" id="eqDialog">
-        <div class="modal-body">
-            <div class="modal-top">
-                <div class="modal-heading">Mathematical Model & Governing Formulations</div>
-                <button class="btn-dismiss" onclick="closeEquationsModal()">&times;</button>
-            </div>
-
-            <div class="eq-block">
-                <div class="eq-label">1. Dynamic Bed Adsorption Kinetics</div>
-                <div class="eq-render">
-                    $$\frac{dq(t)}{dt} = k \cdot \left[ q_{\text{eq}} - q(t) \right] \implies q(t) = q_{\text{eq}} \cdot \left(1 - e^{-k \cdot t}\right)$$
-                </div>
-                <div class="eq-desc">
-                    Where \(q_{\text{eq}} = m_{\text{MOF}} \cdot Q_{\text{max}} \cdot \left(\frac{C_{\text{CO}_2}}{C_{\text{ref}}}\right)\). Baseline: \(m_{\text{MOF}} = 5.0\text{ kg}\), \(Q_{\text{max}} = 0.25\text{ kg CO}_2/\text{kg MOF}\), \(k = 0.04\text{ min}^{-1}\).
-                </div>
-            </div>
-
-            <div class="eq-block">
-                <div class="eq-label">2. Sigmoid Thermal Desorption Release Fraction</div>
-                <div class="eq-render">
-                    $$\sigma(T) = \frac{1}{1 + \exp\left[-k_\sigma (T - T_{\text{m}})\right]}$$
-                </div>
-                <div class="eq-desc">
-                    Derived from Gibbs free energy equilibrium \(\frac{\sigma}{1 - \sigma} = \exp\left(-\frac{\Delta H - T \Delta S}{R T}\right)\), giving inflection midpoint \(T_{\text{m}} = 90^\circ\text{C}\) and steepness \(k_\sigma = 0.08^\circ\text{C}^{-1}\).
-                </div>
-            </div>
-
-            <div class="eq-block">
-                <div class="eq-label">3. Total Regeneration Energy Duty</div>
-                <div class="eq-render">
-                    $$Q_{\text{total}} = Q_{\text{sensible}} + Q_{\text{desorb}} = \left[ m_{\text{MOF}} \cdot c_{\text{MOF}} \cdot (T - T_0) \right] + \left( \frac{m_{\text{released}}}{M_{\text{CO}_2}} \cdot \Delta H_{\text{des}} \right)$$
-                </div>
-                <div class="eq-desc">
-                    Sensible bed warming (\(c_{\text{MOF}} = 0.8\text{ kJ/(kg}\cdot\text{K)}\)) plus carbamate bond cleavage enthalpy (\(\Delta H_{\text{des}} = 45\text{ kJ/mol}\)).
-                </div>
-            </div>
-
-            <div class="eq-block">
-                <div class="eq-label">4. Limewater Mineralization Stoichiometry & Calcite Yield</div>
-                <div class="eq-render">
-                    $$\text{CO}_2\text{ (aq)} + \text{Ca(OH)}_2\text{ (aq)} \longrightarrow \text{CaCO}_3\text{ (s)}\downarrow + \text{H}_2\text{O}\text{ (l)}$$
-                    $$m_{\text{CaCO}_3} = m_{\text{released}} \cdot \left(\frac{M_{\text{CaCO}_3}}{M_{\text{CO}_2}}\right) \approx 2.274 \cdot m_{\text{released}}$$
-                </div>
-                <div class="eq-desc">
-                    Spontaneous calcite precipitation with negligible solubility product (\(K_{\text{sp}} = 3.3 \times 10^{-9}\)). Slurry capacity: \(n_{\text{Ca(OH)}_2} = \frac{w \cdot \rho \cdot V}{M_{\text{Ca(OH)}_2}}\).
+                <div class="stat-card">
+                    <div class="stat-label">Exhaust Back-Pressure</div>
+                    <div class="stat-value" id="hero-pressure">0.68 kPa</div>
+                    <div class="stat-subtext">Automotive safety limit: 5.0 kPa</div>
                 </div>
             </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Simulation Script Logic -->
+    <!-- Architecture Section -->
+    <section id="architecture">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">System Architecture</span>
+                <h2 class="section-title">Coordinated Three-Phase Physical Process</h2>
+                <p class="section-subtitle">
+                    How tailpipe exhaust is ducted through cooperative chemisorptive sorbents, regenerated using thermal waste heat, and sequestered into stable solid minerals.
+                </p>
+            </div>
+
+            <div class="stage-grid">
+                <div class="stage-card">
+                    <span class="stage-number">Phase 1</span>
+                    <h3 class="stage-title">Packed MOF Chemisorption</h3>
+                    <p class="stage-description">
+                        Exhaust gas containing 5% to 15% CO2 flows through a packed bed of diamine-appended Mg-MOF-74 (m-2-m-Mg-dobpdc). Cooperative amine insertion creates step-shaped adsorption isotherms, achieving high capacity even at low partial pressures.
+                    </p>
+                    <div class="stage-specs">
+                        <div class="stage-spec-item">
+                            <span>Sorbent Matrix:</span>
+                            <span>m-2-m-Mg-dobpdc</span>
+                        </div>
+                        <div class="stage-spec-item">
+                            <span>Nominal Capacity:</span>
+                            <span>0.25 kg CO2 / kg MOF</span>
+                        </div>
+                        <div class="stage-spec-item">
+                            <span>Uptake Rate:</span>
+                            <span>k = 0.04 min^-1</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stage-card">
+                    <span class="stage-number">Phase 2</span>
+                    <h3 class="stage-title">Waste Heat Regeneration</h3>
+                    <p class="stage-description">
+                        When the sorbent reaches target saturation, hot exhaust gas (300 to 600 deg C) is diverted through a coaxial heat exchanger jacket. Sorbent temperature rises to 85 - 110 deg C, triggering endothermic carbamate bond cleavage without drawing electrical alternator power.
+                    </p>
+                    <div class="stage-specs">
+                        <div class="stage-spec-item">
+                            <span>Exchanger Geometry:</span>
+                            <span>Coaxial Shell & Tube</span>
+                        </div>
+                        <div class="stage-spec-item">
+                            <span>Release Window:</span>
+                            <span>85 to 110 deg C</span>
+                        </div>
+                        <div class="stage-spec-item">
+                            <span>Regeneration Time:</span>
+                            <span>&lt; 55 seconds (at 15 kW)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="stage-card">
+                    <span class="stage-number">Phase 3</span>
+                    <h3 class="stage-title">Aqueous Calcite Mineralization</h3>
+                    <p class="stage-description">
+                        Desorbed CO2 gas bubbles directly into an unpressurized 30 L limewater tank containing a 20 wt% Ca(OH)2 slurry. Instantaneous precipitation locks carbon dioxide into dense, insoluble solid calcium carbonate (calcite), safely stored without pressurized cylinders.
+                    </p>
+                    <div class="stage-specs">
+                        <div class="stage-spec-item">
+                            <span>Slurry Chemistry:</span>
+                            <span>20 wt% Ca(OH)2 Slurry</span>
+                        </div>
+                        <div class="stage-spec-item">
+                            <span>Calcite Yield:</span>
+                            <span>2.274 kg CaCO3 / kg CO2</span>
+                        </div>
+                        <div class="stage-spec-item">
+                            <span>Storage Pressure:</span>
+                            <span>0.0 bar (Ambient Tank)</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="schematic-wrapper">
+                <img src="figures/Figure_3.4.1_system_schematic.png" alt="Vehicular MOF CO2 Capture System Schematic" class="schematic-img">
+                <div class="schematic-caption">Figure 1: Complete vehicular capture and mineralization integration schematic featuring packed sorbent bed, coaxial exhaust bypass, and ambient slurry tank.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Simulator Section -->
+    <section id="simulator">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Interactive Computational Model</span>
+                <h2 class="section-title">Real-Time Simulation Engine</h2>
+                <p class="section-subtitle">
+                    Adjust vehicle operating parameters, sorbent loading, driving cycle duration, and desorption temperatures to observe real-time kinetics, energy demand, and mineralization yields.
+                </p>
+            </div>
+
+            <div class="simulator-layout">
+                <!-- Controls Panel -->
+                <div class="controls-panel">
+                    <div class="panel-heading">
+                        <span>Operating Controls</span>
+                        <span style="font-size: 10px; color: var(--accent-cyan); font-weight: normal;">Live Update</span>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-header">
+                            <span class="control-title">MOF Sorbent Mass</span>
+                            <span class="control-badge" id="val-mass">5.0 kg</span>
+                        </div>
+                        <input type="range" id="input-mass" min="0.5" max="10.0" step="0.5" value="5.0">
+                        <div class="control-limits">
+                            <span>0.5 kg</span>
+                            <span>10.0 kg</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-header">
+                            <span class="control-title">Exhaust CO2 Concentration</span>
+                            <span class="control-badge" id="val-co2">13.5 %</span>
+                        </div>
+                        <input type="range" id="input-co2" min="2.0" max="18.0" step="0.5" value="13.5">
+                        <div class="control-limits">
+                            <span>2.0% (Lean)</span>
+                            <span>18.0% (Rich)</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-header">
+                            <span class="control-title">Driving Cycle Duration</span>
+                            <span class="control-badge" id="val-time">77 min</span>
+                        </div>
+                        <input type="range" id="input-time" min="10" max="150" step="1" value="77">
+                        <div class="control-limits">
+                            <span>10 min</span>
+                            <span>150 min</span>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-header">
+                            <span class="control-title">Regeneration Temperature</span>
+                            <span class="control-badge" id="val-temp">110 deg C</span>
+                        </div>
+                        <input type="range" id="input-temp" min="60" max="140" step="1" value="110">
+                        <div class="control-limits">
+                            <span>60 deg C</span>
+                            <span>140 deg C</span>
+                        </div>
+                        <div class="quick-presets">
+                            <button type="button" class="preset-btn" onclick="setRegenTemp(85)">Preset: 85 deg C</button>
+                            <button type="button" class="preset-btn" onclick="setRegenTemp(110)">Preset: 110 deg C</button>
+                        </div>
+                    </div>
+
+                    <div class="control-group">
+                        <div class="control-header">
+                            <span class="control-title">Limewater Tank Volume</span>
+                            <span class="control-badge" id="val-volume">30 L</span>
+                        </div>
+                        <input type="range" id="input-volume" min="10" max="50" step="5" value="30">
+                        <div class="control-limits">
+                            <span>10 L</span>
+                            <span>50 L</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Analytics Area -->
+                <div class="analytics-area">
+                    <!-- KPI Row -->
+                    <div class="kpi-row">
+                        <div class="kpi-card">
+                            <div class="kpi-label">CO2 Adsorbed in Bed</div>
+                            <div class="kpi-val highlight-cyan" id="kpi-adsorbed">0.805 kg</div>
+                            <div class="kpi-sub" id="kpi-saturation">95.4% of equilibrium capacity</div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-label">CO2 Released per Cycle</div>
+                            <div class="kpi-val highlight-emerald" id="kpi-released">0.738 kg</div>
+                            <div class="kpi-sub" id="kpi-release-frac">91.7% release fraction</div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-label">Solid Calcite Formed</div>
+                            <div class="kpi-val highlight-amber" id="kpi-calcite">1.678 kg</div>
+                            <div class="kpi-sub" id="kpi-slurry-rem">Ca(OH)2 remaining: 5.36 kg</div>
+                        </div>
+
+                        <div class="kpi-card">
+                            <div class="kpi-label">Total Thermal Duty</div>
+                            <div class="kpi-val highlight-indigo" id="kpi-energy">1265 kJ</div>
+                            <div class="kpi-sub" id="kpi-heat-time">Time at 15 kW: 51 seconds</div>
+                        </div>
+                    </div>
+
+                    <!-- View Control Bar -->
+                    <div class="chart-view-bar">
+                        <span style="font-size: 12px; font-weight: 600; color: var(--text-heading);">Visualization Mode</span>
+                        <div class="view-tabs">
+                            <button type="button" class="tab-btn active" onclick="setChartMode('focused')">Focused 4-Chart Grid</button>
+                            <button type="button" class="tab-btn" onclick="setChartMode('dual')">Dual-Axis Engineering</button>
+                            <button type="button" class="tab-btn" onclick="setChartMode('full')">Full 6-Chart Suite</button>
+                        </div>
+                    </div>
+
+                    <!-- Charts Grid -->
+                    <div class="charts-container grid-4" id="charts-wrapper">
+                        <!-- Chart 1: Adsorption Curve -->
+                        <div class="chart-box" id="box-c1">
+                            <div class="chart-box-title">
+                                <span>Adsorption Breakthrough Kinetics</span>
+                                <span style="font-size: 10px; font-family: var(--font-mono); color: var(--accent-cyan);">q(t) vs Time</span>
+                            </div>
+                            <div class="chart-box-sub">Mass of CO2 captured over driving cycle duration</div>
+                            <div class="chart-canvas-wrapper">
+                                <canvas id="chart-adsorption"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Chart 2: Mineralization Yield -->
+                        <div class="chart-box" id="box-c2">
+                            <div class="chart-box-title">
+                                <span>Calcite Mineralization Yield</span>
+                                <span style="font-size: 10px; font-family: var(--font-mono); color: var(--accent-emerald);">CaCO3 vs Time</span>
+                            </div>
+                            <div class="chart-box-sub">Stoichiometric permanent solid carbonate precipitation</div>
+                            <div class="chart-canvas-wrapper">
+                                <canvas id="chart-calcite"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Chart 3: Desorption Sigmoid -->
+                        <div class="chart-box" id="box-c3">
+                            <div class="chart-box-title">
+                                <span>Thermal Desorption Sigmoid</span>
+                                <span style="font-size: 10px; font-family: var(--font-mono); color: var(--accent-amber);">sigma(T) vs Temp</span>
+                            </div>
+                            <div class="chart-box-sub">Logistic cooperative carbamate cleavage efficiency</div>
+                            <div class="chart-canvas-wrapper">
+                                <canvas id="chart-sigmoid"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Chart 4: Energy Intensity -->
+                        <div class="chart-box" id="box-c4">
+                            <div class="chart-box-title">
+                                <span>Specific Energy Intensity</span>
+                                <span style="font-size: 10px; font-family: var(--font-mono); color: var(--accent-rose);">kJ/kg CO2 vs Temp</span>
+                            </div>
+                            <div class="chart-box-sub">Sensible and desorption latent heat duty trade-off</div>
+                            <div class="chart-canvas-wrapper">
+                                <canvas id="chart-energy"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Chart 5: Dual Axis Adsorption & Mineralization -->
+                        <div class="chart-box" id="box-c5" style="display: none;">
+                            <div class="chart-box-title">
+                                <span>Dual-Axis Adsorption & Mineralization</span>
+                                <span style="font-size: 10px; font-family: var(--font-mono); color: var(--accent-cyan);">Dual Y-Axis</span>
+                            </div>
+                            <div class="chart-box-sub">Direct comparison of sorbent loading and solid yield</div>
+                            <div class="chart-canvas-wrapper">
+                                <canvas id="chart-dual-ads"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- Chart 6: Dual Axis Desorption & Energy -->
+                        <div class="chart-box" id="box-c6" style="display: none;">
+                            <div class="chart-box-title">
+                                <span>Dual-Axis Desorption Window</span>
+                                <span style="font-size: 10px; font-family: var(--font-mono); color: var(--accent-amber);">Dual Y-Axis</span>
+                            </div>
+                            <div class="chart-box-sub">Release fraction and specific energy intensity trade-off</div>
+                            <div class="chart-canvas-wrapper">
+                                <canvas id="chart-dual-therm"></canvas>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chassis & Packaging Metrics -->
+                    <div class="chassis-box">
+                        <div class="chassis-item">
+                            <span class="chassis-label">Exhaust Back-Pressure</span>
+                            <span class="chassis-val" id="chassis-pressure">0.68 kPa</span>
+                            <span class="chassis-status">Within 5.0 kPa limit</span>
+                        </div>
+                        <div class="chassis-item">
+                            <span class="chassis-label">Packed Bed Dimensions</span>
+                            <span class="chassis-val" id="chassis-dims">17 x 25 cm</span>
+                            <span class="chassis-status" id="chassis-volume">Envelope: 5.56 L</span>
+                        </div>
+                        <div class="chassis-item">
+                            <span class="chassis-label">Total Wet System Mass</span>
+                            <span class="chassis-val" id="chassis-mass">46.0 kg</span>
+                            <span class="chassis-status">Sorbent + Canister + Slurry</span>
+                        </div>
+                        <div class="chassis-item">
+                            <span class="chassis-label">Vehicle Fuel Penalty</span>
+                            <span class="chassis-val" id="chassis-fuel">3.07 %</span>
+                            <span class="chassis-status">On 1500 kg passenger sedan</span>
+                        </div>
+                    </div>
+
+                    <!-- Sensitivity Sweep Table -->
+                    <div class="table-panel">
+                        <div class="panel-heading">
+                            <span>Regeneration Temperature Sensitivity Sweep (70 to 130 deg C)</span>
+                            <span style="font-size: 10.5px; color: var(--text-muted);">Row highlights match current slider temperature</span>
+                        </div>
+                        <table class="sensitivity-table">
+                            <thead>
+                                <tr>
+                                    <th>Temp (deg C)</th>
+                                    <th>Release Fraction</th>
+                                    <th>CO2 Released (kg)</th>
+                                    <th>CaCO3 Yield (kg)</th>
+                                    <th>Sensible Heat (kJ)</th>
+                                    <th>Desorption Latent (kJ)</th>
+                                    <th>Total Duty (kJ)</th>
+                                    <th>Energy Intensity (kJ/kg)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="sensitivity-tbody">
+                                <!-- Populated dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Mathematics & Formulations Section -->
+    <section id="mathematics">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Governing Formulations</span>
+                <h2 class="section-title">Mathematical Model and Algorithm</h2>
+                <p class="section-subtitle">
+                    Exact analytical equations and kinetic derivations governing dynamic mass transfer, thermal carbamate cleavage, and mineralization stoichiometry.
+                </p>
+            </div>
+
+            <div class="math-grid">
+                <div class="math-card">
+                    <h3 class="math-title">1. Linear Driving Force Adsorption Kinetics</h3>
+                    <p class="math-desc">First-order mass transfer approach toward equilibrium capacity over driving cycle time.</p>
+                    <div class="math-formula-box">
+                        $$q(t) = q_{\text{eq}} - \left(q_{\text{eq}} - q_{\text{start}}\right) \cdot e^{-k \cdot t}$$
+                    </div>
+                    <div class="math-notes">
+                        Where: $q_{\text{eq}} = m_{\text{MOF}} \cdot Q_{\text{max}} \cdot \left(\frac{C_{\text{CO}_2}}{C_{\text{ref}}}\right)$, $k = 0.04\text{ min}^{-1}$, $Q_{\text{max}} = 0.25\text{ kg/kg}$.
+                    </div>
+                </div>
+
+                <div class="math-card">
+                    <h3 class="math-title">2. Gibbs-Derived Sigmoidal Desorption</h3>
+                    <p class="math-desc">Logistic release fraction driven by cooperative carbamate polymer chain collapse.</p>
+                    <div class="math-formula-box">
+                        $$\sigma(T) = \frac{1}{1 + \exp\left[-k_\sigma \cdot \left(T - T_m\right)\right]}$$
+                    </div>
+                    <div class="math-notes">
+                        Where: $T_m = 90.0\text{ }^\circ\text{C}$ (transition midpoint), $k_\sigma = 0.08\text{ }^\circ\text{C}^{-1}$, $m_{\text{released}} = q(t) \cdot \sigma(T)$.
+                    </div>
+                </div>
+
+                <div class="math-card">
+                    <h3 class="math-title">3. Regeneration Thermal Duty Balance</h3>
+                    <p class="math-desc">Sensible bed heating combined with molar carbamate cleavage enthalpy.</p>
+                    <div class="math-formula-box">
+                        $$Q_{\text{total}} = \left[m_{\text{MOF}} \cdot c_{\text{MOF}} \cdot \left(T - T_0\right)\right] + \left(\frac{q(t)}{M_{\text{CO}_2}} \cdot \Delta H_{\text{des}}\right)$$
+                    </div>
+                    <div class="math-notes">
+                        Where: $c_{\text{MOF}} = 0.80\text{ kJ/(kg}\cdot\text{K)}$, $\Delta H_{\text{des}} = 45.0\text{ kJ/mol}$, $M_{\text{CO}_2} = 44.01\text{ g/mol}$.
+                    </div>
+                </div>
+
+                <div class="math-card">
+                    <h3 class="math-title">4. Stoichiometric Calcite Precipitation</h3>
+                    <p class="math-desc">Aqueous neutralization forming solid, inert calcium carbonate.</p>
+                    <div class="math-formula-box">
+                        $$m_{\text{CaCO}_3} = m_{\text{released}} \cdot \left(\frac{M_{\text{CaCO}_3}}{M_{\text{CO}_2}}\right) \approx 2.274 \cdot m_{\text{released}}$$
+                    </div>
+                    <div class="math-notes">
+                        Where: $M_{\text{CaCO}_3} = 100.09\text{ g/mol}$, $M_{\text{Ca(OH)}_2} = 74.09\text{ g/mol}$, $K_{\text{sp}} = 3.3 \times 10^{-9}$.
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Engineering & Chassis Section -->
+    <section id="chassis">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Automotive Engineering</span>
+                <h2 class="section-title">Chassis Integration Feasibility</h2>
+                <p class="section-subtitle">
+                    Pressure drop calculations, cylindrical envelope sizing, and vehicle weight budget analysis.
+                </p>
+            </div>
+
+            <div class="schematic-wrapper" style="margin-top: 0; margin-bottom: 2rem;">
+                <img src="figures/Figure_3.4.2_algorithm_flowchart.png" alt="Algorithm Flowchart" class="schematic-img" style="max-height: 480px;">
+                <div class="schematic-caption">Figure 2: Time-stepped computational solver flowchart from cold start to calcite precipitation.</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section -->
+    <section id="team">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-tag">Project Contributors</span>
+                <h2 class="section-title">Research & Development Team</h2>
+                <p class="section-subtitle">
+                    Project leadership, computational model development, and technical advisors.
+                </p>
+            </div>
+
+            <div class="team-grid">
+                <div class="team-card">
+                    <span class="team-role">Lead Researcher & Model Architect</span>
+                    <h3 class="team-name">Advik Harihar</h3>
+                    <p class="team-bio">
+                        Lead investigator focusing on numerical modeling, quantitative mathematical derivations, adsorption kinetics, and thermodynamic simulation equations for metal-organic frameworks.
+                    </p>
+                </div>
+
+                <div class="team-card">
+                    <span class="team-role">Co-Researcher & Systems Strategy</span>
+                    <h3 class="team-name">Panav K Bysani</h3>
+                    <p class="team-bio">
+                        Co-investigator focusing on applied chemistry, clean technology systems, commercial feasibility modeling, and automotive chassis packaging integration.
+                    </p>
+                </div>
+
+                <div class="team-card">
+                    <span class="team-role">Technical Mentor & Chemistry Advisor</span>
+                    <h3 class="team-name">Yash Verma</h3>
+                    <p class="team-bio">
+                        Technical mentor holding a Master of Technology (M.Tech) from IIT Kharagpur with two years experience as a Project Scientist. Specializes in mathematical modeling, chemical reaction engineering, and thermodynamics.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="site-footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="brand-text" style="font-size: 18px;">AERO-MOF Platform</div>
+                    <div class="footer-sub">Open-Access Vehicular Carbon Capture and Mineralization Simulator</div>
+                </div>
+                <div class="footer-links">
+                    <a href="#hero">Overview</a>
+                    <a href="#architecture">Architecture</a>
+                    <a href="#simulator">Simulator</a>
+                    <a href="#mathematics">Formulations</a>
+                    <a href="#team">Team</a>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>Open Source under MIT License</span>
+                <span>Advik Harihar, Panav K Bysani, Yash Verma (2026)</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Interactive Simulation Logic -->
     <script>
-        const Q_MAX_BASELINE = 0.25;
-        const C_REF = 20.0;
-        const K_AD = 0.04;
-        const K_SIGMA = 0.08;
-        const T_MID = 90.0;
-        const T_AMBIENT = 25.0;
-        const C_MOF = 0.8;
-        const DELTA_H_DES = 45.0;
-        const M_MOL_CO2 = 0.04401;
-        const M_MOL_CACO3 = 0.10009;
-        const M_MOL_CAOH2 = 0.07409;
-        const RHO_SLURRY = 1.10;
-        const W_SLURRY = 0.20;
-        const RHO_BULK = 0.90;
-        const D_CM = 15.0;
-        const DRY_HARDWARE_MASS = 8.0;
-        const VEHICLE_MASS = 1500.0;
-        const P_EXHAUST = 20.0; // kW
+        // Frozen Physical Constants
+        const CONSTANTS = Object.freeze({
+            Q_MAX: 0.25,        // kg CO2 / kg MOF at reference concentration
+            C_REF: 20.0,        // Reference concentration (% vol)
+            K_ADS: 0.04,        // First-order rate constant (min^-1)
+            DH_DES: 45.0,       // Desorption enthalpy (kJ/mol)
+            C_MOF: 0.80,        // Specific heat capacity (kJ/kg*K)
+            T_AMBIENT: 25.0,    // Ambient baseline (deg C)
+            T_MID: 90.0,        // Sigmoid transition midpoint (deg C)
+            K_SIGMA: 0.08,      // Sigmoid steepness (deg C^-1)
+            M_CO2: 0.04401,     // Molar mass of CO2 (kg/mol)
+            M_CACO3: 100.09,    // Molar mass of CaCO3 (g/mol)
+            M_CAOH2: 74.09,     // Molar mass of Ca(OH)2 (g/mol)
+            SLURRY_DENSITY: 1.10,// kg/L
+            SLURRY_WT_FRAC: 0.20 // 20 wt% Ca(OH)2
+        });
 
-        const inputs = {
-            m_mof: document.getElementById('sl_m_mof'),
-            c_co2: document.getElementById('sl_c_co2'),
-            scrub: document.getElementById('sl_scrub'),
-            t_regen: document.getElementById('sl_t_regen'),
-            slurry: document.getElementById('sl_slurry')
+        // State Store
+        const state = {
+            m_mof: 5.0,
+            c_co2: 13.5,
+            time: 77,
+            temp: 110,
+            volume: 30,
+            chartMode: 'focused'
         };
 
-        const labels = {
-            m_mof: document.getElementById('txt_m_mof'),
-            c_co2: document.getElementById('txt_c_co2'),
-            scrub: document.getElementById('txt_scrub'),
-            t_regen: document.getElementById('txt_t_regen'),
-            slurry: document.getElementById('txt_slurry')
-        };
-
-        // Chart Instances
-        let chartAdsorption = null;
-        let chartCaCO3 = null;
+        // Chart References
+        let chartAds = null;
+        let chartCalc = null;
+        let chartSigm = null;
         let chartEnergy = null;
-        let chartRelease = null;
-        let chartKineticsDual = null;
-        let chartThermoDual = null;
+        let chartDualAds = null;
+        let chartDualTherm = null;
 
-        function setTemperature(t) {
-            inputs.t_regen.value = t;
-            document.getElementById('btn_85').classList.toggle('active', t === 85);
-            document.getElementById('btn_110').classList.toggle('active', t === 110);
-            updateModel();
-        }
+        // Mathematical Engine
+        function computeEngine() {
+            // Bound Inputs
+            const m = Math.max(0.1, Math.min(20.0, state.m_mof));
+            const c = Math.max(0.1, Math.min(30.0, state.c_co2));
+            const t = Math.max(1, Math.min(300, state.time));
+            const T = Math.max(40, Math.min(160, state.temp));
+            const V = Math.max(5, Math.min(100, state.volume));
 
-        function openEquationsModal() {
-            document.getElementById('eqDialog').style.display = 'flex';
-        }
+            // Equilibrium Saturation
+            const q_eq = m * CONSTANTS.Q_MAX * (c / CONSTANTS.C_REF);
 
-        function closeEquationsModal() {
-            document.getElementById('eqDialog').style.display = 'none';
-        }
+            // Dynamic Uptake
+            const q_t = q_eq * (1 - Math.exp(-CONSTANTS.K_ADS * t));
+            const sat_pct = (q_t / q_eq) * 100;
 
-        window.onclick = function(e) {
-            const m = document.getElementById('eqDialog');
-            if (e.target === m) closeEquationsModal();
-        };
-
-        function switchChartMode(mode) {
-            document.getElementById('btn_mode_4grid').classList.toggle('active', mode === '4grid');
-            document.getElementById('btn_mode_dual').classList.toggle('active', mode === 'dual');
-            document.getElementById('btn_mode_all').classList.toggle('active', mode === 'all');
-
-            const c4 = document.getElementById('container_4grid');
-            const cd = document.getElementById('container_dual');
-
-            if (mode === '4grid') {
-                c4.style.display = 'grid';
-                cd.style.display = 'none';
-            } else if (mode === 'dual') {
-                c4.style.display = 'none';
-                cd.style.display = 'grid';
-            } else if (mode === 'all') {
-                c4.style.display = 'grid';
-                cd.style.display = 'grid';
-            }
-
-            // Trigger chart resize
-            window.dispatchEvent(new Event('resize'));
-        }
-
-        const commonChartOptions = {
-            responsive: true,
-            maintainAspectRatio: false,
-            interaction: { mode: 'index', intersect: false },
-            plugins: {
-                legend: {
-                    position: 'top',
-                    labels: { boxWidth: 12, font: { family: 'Inter', size: 11 } }
-                },
-                tooltip: {
-                    backgroundColor: 'rgba(15, 23, 42, 0.9)',
-                    titleFont: { family: 'Inter', size: 11, weight: 'bold' },
-                    bodyFont: { family: 'JetBrains Mono', size: 11 },
-                    padding: 8,
-                    cornerRadius: 4
-                }
-            },
-            scales: {
-                x: {
-                    grid: { color: '#f1f5f9' },
-                    ticks: { font: { family: 'Inter', size: 10 } }
-                },
-                y: {
-                    grid: { color: '#f1f5f9' },
-                    ticks: { font: { family: 'Inter', size: 10 } }
-                }
-            }
-        };
-
-        function initAllCharts() {
-            // 1. Chart Adsorption vs Time
-            const ctx1 = document.getElementById('chartAdsorption').getContext('2d');
-            chartAdsorption = new Chart(ctx1, {
-                type: 'line',
-                data: { labels: [], datasets: [] },
-                options: {
-                    ...commonChartOptions,
-                    scales: {
-                        ...commonChartOptions.scales,
-                        x: { ...commonChartOptions.scales.x, title: { display: true, text: 'Time (min)', color: '#64748b' } },
-                        y: { ...commonChartOptions.scales.y, title: { display: true, text: 'CO₂ Adsorbed (kg)', color: '#2563eb' }, beginAtZero: true }
-                    }
-                }
-            });
-
-            // 2. Chart CaCO3 vs Time
-            const ctx2 = document.getElementById('chartCaCO3').getContext('2d');
-            chartCaCO3 = new Chart(ctx2, {
-                type: 'line',
-                data: { labels: [], datasets: [] },
-                options: {
-                    ...commonChartOptions,
-                    scales: {
-                        ...commonChartOptions.scales,
-                        x: { ...commonChartOptions.scales.x, title: { display: true, text: 'Time (min)', color: '#64748b' } },
-                        y: { ...commonChartOptions.scales.y, title: { display: true, text: 'CaCO₃ Yield (kg)', color: '#059669' }, beginAtZero: true }
-                    }
-                }
-            });
-
-            // 3. Chart Energy vs Temp
-            const ctx3 = document.getElementById('chartEnergy').getContext('2d');
-            chartEnergy = new Chart(ctx3, {
-                type: 'line',
-                data: { labels: [], datasets: [] },
-                options: {
-                    ...commonChartOptions,
-                    scales: {
-                        ...commonChartOptions.scales,
-                        x: { ...commonChartOptions.scales.x, title: { display: true, text: 'Regen Temperature (°C)', color: '#64748b' } },
-                        y: { ...commonChartOptions.scales.y, title: { display: true, text: 'Intensity (kJ/kg CO₂)', color: '#dc2626' }, beginAtZero: false }
-                    }
-                }
-            });
-
-            // 4. Chart Release vs Temp
-            const ctx4 = document.getElementById('chartRelease').getContext('2d');
-            chartRelease = new Chart(ctx4, {
-                type: 'line',
-                data: { labels: [], datasets: [] },
-                options: {
-                    ...commonChartOptions,
-                    scales: {
-                        ...commonChartOptions.scales,
-                        x: { ...commonChartOptions.scales.x, title: { display: true, text: 'Regen Temperature (°C)', color: '#64748b' } },
-                        y: { ...commonChartOptions.scales.y, title: { display: true, text: 'Desorbed Mass (kg)', color: '#7c3aed' }, beginAtZero: true }
-                    }
-                }
-            });
-
-            // 5. Dual-Axis Kinetics Chart
-            const ctx5 = document.getElementById('canvasKineticsDual').getContext('2d');
-            chartKineticsDual = new Chart(ctx5, {
-                type: 'line',
-                data: { labels: [], datasets: [] },
-                options: {
-                    ...commonChartOptions,
-                    scales: {
-                        x: { grid: { color: '#f1f5f9' }, title: { display: true, text: 'Time (min)', color: '#64748b' } },
-                        y: { position: 'left', grid: { color: '#f1f5f9' }, title: { display: true, text: 'CO₂ Adsorbed [kg]', color: '#2563eb' } },
-                        y1: { position: 'right', grid: { display: false }, title: { display: true, text: 'CaCO₃ Yield [kg]', color: '#059669' } }
-                    }
-                }
-            });
-
-            // 6. Dual-Axis Thermo Chart
-            const ctx6 = document.getElementById('canvasThermoDual').getContext('2d');
-            chartThermoDual = new Chart(ctx6, {
-                type: 'line',
-                data: { labels: [], datasets: [] },
-                options: {
-                    ...commonChartOptions,
-                    scales: {
-                        x: { grid: { color: '#f1f5f9' }, title: { display: true, text: 'Regeneration Temperature (°C)', color: '#64748b' } },
-                        y: { position: 'left', min: 0, max: 1.05, grid: { color: '#f1f5f9' }, title: { display: true, text: 'Desorption Fraction σ(T)', color: '#2563eb' } },
-                        y1: { position: 'right', min: 0, max: 5500, grid: { display: false }, title: { display: true, text: 'Intensity (kJ/kg CO₂)', color: '#dc2626' } }
-                    }
-                }
-            });
-        }
-
-        function updateModel() {
-            const m_mof = parseFloat(inputs.m_mof.value);
-            const c_co2 = parseFloat(inputs.c_co2.value);
-            const scrub_t = parseFloat(inputs.scrub.value);
-            const t_regen = parseFloat(inputs.t_regen.value);
-            const v_slurry = parseFloat(inputs.slurry.value);
-
-            labels.m_mof.innerText = m_mof.toFixed(2) + ' kg';
-            labels.c_co2.innerText = c_co2.toFixed(1) + '%';
-            labels.scrub.innerText = Math.round(scrub_t) + ' min';
-            labels.t_regen.innerText = t_regen.toFixed(1) + ' °C';
-            labels.slurry.innerText = Math.round(v_slurry) + ' L';
-
-            // Core Chemistry and Mass Balance
-            const q_eq = m_mof * Q_MAX_BASELINE * (c_co2 / C_REF);
-            const q_t = q_eq * (1 - Math.exp(-K_AD * scrub_t));
-            const pct = (q_t / q_eq) * 100;
-
-            const calcSigma = (T) => 1.0 / (1.0 + Math.exp(-K_SIGMA * (T - T_MID)));
-            const sigma = calcSigma(t_regen);
+            // Desorption Sigmoid
+            const sigma = 1 / (1 + Math.exp(-CONSTANTS.K_SIGMA * (T - CONSTANTS.T_MID)));
             const m_released = q_t * sigma;
 
-            const Q_sens = m_mof * C_MOF * (t_regen - T_AMBIENT);
-            const n_CO2 = m_released / M_MOL_CO2;
-            const Q_des = n_CO2 * DELTA_H_DES;
-            const Q_total = Q_sens + Q_des;
-            const intensity = m_released > 0 ? (Q_total / m_released) : 0;
+            // Calcite Mineralization
+            const m_caco3 = m_released * (CONSTANTS.M_CACO3 / (CONSTANTS.M_CO2 * 1000));
+            const caoh2_initial = V * CONSTANTS.SLURRY_DENSITY * CONSTANTS.SLURRY_WT_FRAC;
+            const caoh2_consumed = m_released * (CONSTANTS.M_CAOH2 / (CONSTANTS.M_CO2 * 1000));
+            const caoh2_remaining = Math.max(0, caoh2_initial - caoh2_consumed);
 
-            const m_CaCO3 = n_CO2 * M_MOL_CACO3;
-            const m_CaOH2_used = n_CO2 * M_MOL_CAOH2;
-            const total_CaOH2 = v_slurry * RHO_SLURRY * W_SLURRY;
-            const cycles = m_CaOH2_used > 0 ? (total_CaOH2 / m_CaOH2_used) : 999;
+            // Thermal Duty
+            const q_sensible = m * CONSTANTS.C_MOF * (T - CONSTANTS.T_AMBIENT);
+            const q_desorb = (q_t / CONSTANTS.M_CO2) * CONSTANTS.DH_DES;
+            const q_total = q_sensible + q_desorb;
+            const energy_intensity = m_released > 0 ? (q_total / m_released) : 0;
+            const heat_time = (q_total / 15.0); // at 15 kW exhaust heat
 
-            // Physical Packaging & Engine Back-Pressure
-            const V_bed = m_mof / RHO_BULK;
-            const L_cm = (V_bed * 1000) / (Math.PI * Math.pow(D_CM / 2, 2));
-            const deltaP = 0.76 * (L_cm / 35.0);
-            const total_mass = m_mof + DRY_HARDWARE_MASS + (v_slurry * RHO_SLURRY);
-            const penalty = (total_mass / VEHICLE_MASS) * 100;
+            // Chassis & Packaging
+            const v_bed = m / (0.90 * 0.60); // Envelope volume in L
+            const bed_diam = 17; // cm
+            const bed_len = Math.round(v_bed / (Math.PI * Math.pow(bed_diam / 2, 2) / 1000));
+            const back_pressure = 0.68 * (m / 5.0);
+            const total_mass = m + 8.0 + (V * CONSTANTS.SLURRY_DENSITY);
+            const fuel_penalty = 3.07 * (total_mass / 46.0);
 
-            // Update Metric Cards
-            document.getElementById('card_q_eq').innerText = q_eq.toFixed(3) + ' kg';
-            document.getElementById('card_q_t').innerText = q_t.toFixed(3) + ' kg';
-            document.getElementById('card_q_pct').innerText = pct.toFixed(1) + '% of equilibrium';
-            document.getElementById('card_released').innerText = m_released.toFixed(3) + ' kg';
-            document.getElementById('card_sigma').innerText = 'Release σ = ' + (sigma * 100).toFixed(1) + '%';
-            document.getElementById('card_caco3').innerText = m_CaCO3.toFixed(3) + ' kg';
-            document.getElementById('card_energy').innerText = Math.round(Q_total) + ' kJ';
-            document.getElementById('card_intensity').innerText = Math.round(intensity) + ' kJ/kg CO₂';
-            document.getElementById('card_cycles').innerText = cycles >= 100 ? '100+ cycles' : cycles.toFixed(1) + ' cycles';
+            return {
+                q_eq, q_t, sat_pct, sigma, m_released, m_caco3,
+                caoh2_initial, caoh2_consumed, caoh2_remaining,
+                q_sensible, q_desorb, q_total, energy_intensity, heat_time,
+                v_bed, bed_diam, bed_len, back_pressure, total_mass, fuel_penalty
+            };
+        }
 
-            document.getElementById('ui_vbed').innerText = V_bed.toFixed(2) + ' L';
-            document.getElementById('ui_dims').innerText = D_CM.toFixed(1) + ' × ' + L_cm.toFixed(1) + ' cm';
-            document.getElementById('ui_dp').innerText = deltaP.toFixed(2) + ' kPa';
-            document.getElementById('ui_mass').innerText = total_mass.toFixed(1) + ' kg';
-            document.getElementById('ui_penalty').innerText = penalty.toFixed(2) + ' %';
+        // DOM Update
+        function updateUI() {
+            const data = computeEngine();
 
-            // Generate Kinetics Data Arrays
-            const t_arr = [];
-            const q_arr = [];
-            const caco3_arr = [];
-            const step_t = scrub_t > 90 ? 2 : 1;
-            for (let t = 0; t <= Math.max(120, scrub_t); t += step_t) {
-                t_arr.push(t);
-                const q = q_eq * (1 - Math.exp(-K_AD * t));
-                q_arr.push(q.toFixed(4));
-                caco3_arr.push((q * sigma * (M_MOL_CACO3 / M_MOL_CO2)).toFixed(4));
-            }
+            // Hero Stats
+            document.getElementById('hero-co2').textContent = data.q_t.toFixed(3) + ' kg';
+            document.getElementById('hero-energy').textContent = Math.round(data.q_total) + ' kJ';
+            document.getElementById('hero-calcite').textContent = data.m_caco3.toFixed(3) + ' kg';
+            document.getElementById('hero-pressure').textContent = data.back_pressure.toFixed(2) + ' kPa';
 
-            // Update Chart 1: Adsorption
-            chartAdsorption.data.labels = t_arr;
-            chartAdsorption.data.datasets = [{
-                label: 'CO₂ Adsorbed q(t) [kg]',
-                data: q_arr,
-                borderColor: '#2563eb',
-                backgroundColor: 'rgba(37, 99, 235, 0.08)',
-                borderWidth: 2.2,
-                fill: true,
-                pointRadius: 0
-            }];
-            chartAdsorption.update('none');
+            // Slider Badges
+            document.getElementById('val-mass').textContent = state.m_mof.toFixed(1) + ' kg';
+            document.getElementById('val-co2').textContent = state.c_co2.toFixed(1) + ' %';
+            document.getElementById('val-time').textContent = Math.round(state.time) + ' min';
+            document.getElementById('val-temp').textContent = Math.round(state.temp) + ' deg C';
+            document.getElementById('val-volume').textContent = Math.round(state.volume) + ' L';
 
-            // Update Chart 2: CaCO3
-            chartCaCO3.data.labels = t_arr;
-            chartCaCO3.data.datasets = [{
-                label: 'CaCO₃ Formed [kg]',
-                data: caco3_arr,
-                borderColor: '#059669',
-                backgroundColor: 'rgba(5, 150, 105, 0.08)',
-                borderWidth: 2.2,
-                fill: true,
-                pointRadius: 0
-            }];
-            chartCaCO3.update('none');
+            // KPI Row
+            document.getElementById('kpi-adsorbed').textContent = data.q_t.toFixed(3) + ' kg';
+            document.getElementById('kpi-saturation').textContent = data.sat_pct.toFixed(1) + '% of equilibrium capacity';
 
-            // Generate Temperature Range Data Arrays
-            const T_arr = [];
-            const sig_arr = [];
-            const intens_arr = [];
-            const release_arr = [];
-            for (let T = 40; T <= 150; T += 2) {
-                T_arr.push(T + '°C');
-                const s = calcSigma(T);
-                sig_arr.push(s.toFixed(4));
+            document.getElementById('kpi-released').textContent = data.m_released.toFixed(3) + ' kg';
+            document.getElementById('kpi-release-frac').textContent = (data.sigma * 100).toFixed(1) + '% release fraction';
 
-                const rel_T = q_t * s;
-                release_arr.push(rel_T.toFixed(4));
+            document.getElementById('kpi-calcite').textContent = data.m_caco3.toFixed(3) + ' kg';
+            document.getElementById('kpi-slurry-rem').textContent = 'Ca(OH)2 remaining: ' + data.caoh2_remaining.toFixed(2) + ' kg';
 
-                const q_tot_T = (m_mof * C_MOF * (T - T_AMBIENT)) + ((rel_T / M_MOL_CO2) * DELTA_H_DES);
-                const e_int = rel_T > 0 ? (q_tot_T / rel_T) : 0;
-                intens_arr.push(e_int > 5500 ? 5500 : Math.round(e_int));
-            }
+            document.getElementById('kpi-energy').textContent = Math.round(data.q_total) + ' kJ';
+            document.getElementById('kpi-heat-time').textContent = 'Time at 15 kW: ' + Math.round(data.heat_time) + ' seconds';
 
-            // Update Chart 3: Energy Intensity
-            chartEnergy.data.labels = T_arr;
-            chartEnergy.data.datasets = [{
-                label: 'Energy Intensity (kJ/kg CO₂)',
-                data: intens_arr,
-                borderColor: '#dc2626',
-                backgroundColor: 'rgba(220, 38, 38, 0.08)',
-                borderWidth: 2.2,
-                fill: true,
-                pointRadius: 0
-            }];
-            chartEnergy.update('none');
+            // Chassis Impact
+            document.getElementById('chassis-pressure').textContent = data.back_pressure.toFixed(2) + ' kPa';
+            document.getElementById('chassis-dims').textContent = data.bed_diam + ' x ' + data.bed_len + ' cm';
+            document.getElementById('chassis-volume').textContent = 'Envelope: ' + data.v_bed.toFixed(2) + ' L';
+            document.getElementById('chassis-mass').textContent = data.total_mass.toFixed(1) + ' kg';
+            document.getElementById('chassis-fuel').textContent = data.fuel_penalty.toFixed(2) + ' %';
 
-            // Update Chart 4: Release vs Temp
-            chartRelease.data.labels = T_arr;
-            chartRelease.data.datasets = [{
-                label: 'CO₂ Liberated (kg)',
-                data: release_arr,
-                borderColor: '#7c3aed',
-                backgroundColor: 'rgba(124, 58, 237, 0.08)',
-                borderWidth: 2.2,
-                fill: true,
-                pointRadius: 0
-            }];
-            chartRelease.update('none');
+            // Update Sensitivity Table
+            updateSensitivityTable(data);
 
-            // Update Chart 5: Dual Kinetics
-            chartKineticsDual.data.labels = t_arr;
-            chartKineticsDual.data.datasets = [
-                {
-                    label: 'CO₂ Adsorbed [kg]',
-                    data: q_arr,
-                    borderColor: '#2563eb',
-                    backgroundColor: 'rgba(37, 99, 235, 0.05)',
-                    fill: true,
-                    borderWidth: 2.2,
-                    pointRadius: 0,
-                    yAxisID: 'y'
-                },
-                {
-                    label: 'CaCO₃ Yield [kg]',
-                    data: caco3_arr,
-                    borderColor: '#059669',
-                    borderDash: [5, 4],
-                    borderWidth: 2.2,
-                    pointRadius: 0,
-                    yAxisID: 'y1'
-                }
-            ];
-            chartKineticsDual.update('none');
+            // Update Charts
+            updateCharts(data);
+        }
 
-            // Update Chart 6: Dual Thermo
-            chartThermoDual.data.labels = T_arr;
-            chartThermoDual.data.datasets = [
-                {
-                    label: 'Release Fraction σ(T)',
-                    data: sig_arr,
-                    borderColor: '#2563eb',
-                    borderWidth: 2.2,
-                    pointRadius: 0,
-                    yAxisID: 'y'
-                },
-                {
-                    label: 'Intensity (kJ/kg CO₂)',
-                    data: intens_arr,
-                    borderColor: '#dc2626',
-                    borderWidth: 2.0,
-                    borderDash: [4, 4],
-                    pointRadius: 0,
-                    yAxisID: 'y1'
-                }
-            ];
-            chartThermoDual.update('none');
-
-            // Populate Sensitivity Table
-            const tbody = document.getElementById('tbl_body');
+        function updateSensitivityTable(currentData) {
+            const tbody = document.getElementById('sensitivity-tbody');
             tbody.innerHTML = '';
-            const temps = [70, 75, 80, 85, 90, 95, 100, 110, 120, 130];
+            const temps = [70, 80, 85, 90, 95, 100, 110, 120, 130];
+
             temps.forEach(T => {
-                const s = calcSigma(T);
-                const rel = q_t * s;
-                const caco3 = rel * (M_MOL_CACO3 / M_MOL_CO2);
-                const q_s = m_mof * C_MOF * (T - T_AMBIENT);
-                const q_d = (rel / M_MOL_CO2) * DELTA_H_DES;
-                const q_tot = q_s + q_d;
-                const intens = rel > 0 ? (q_tot / rel) : 0;
-                const t_sec = q_tot / P_EXHAUST;
+                const sig = 1 / (1 + Math.exp(-CONSTANTS.K_SIGMA * (T - CONSTANTS.T_MID)));
+                const rel = currentData.q_t * sig;
+                const calc = rel * (CONSTANTS.M_CACO3 / (CONSTANTS.M_CO2 * 1000));
+                const sens = state.m_mof * CONSTANTS.C_MOF * (T - CONSTANTS.T_AMBIENT);
+                const des = (currentData.q_t / CONSTANTS.M_CO2) * CONSTANTS.DH_DES;
+                const tot = sens + des;
+                const intensity = rel > 0 ? (tot / rel) : 0;
 
                 const tr = document.createElement('tr');
-                if (Math.round(T) === Math.round(t_regen)) tr.className = 'row-selected';
+                if (Math.abs(state.temp - T) <= 2.5) {
+                    tr.className = 'active-sweep-row';
+                }
 
                 tr.innerHTML = `
-                    <td style="font-family: var(--font-mono);">${T} °C</td>
-                    <td style="font-family: var(--font-mono);">${(s * 100).toFixed(1)}%</td>
-                    <td style="font-family: var(--font-mono);">${rel.toFixed(3)} kg</td>
-                    <td style="font-family: var(--font-mono);">${caco3.toFixed(3)} kg</td>
-                    <td style="font-family: var(--font-mono);">${Math.round(q_s)} kJ</td>
-                    <td style="font-family: var(--font-mono);">${Math.round(q_d)} kJ</td>
-                    <td style="font-family: var(--font-mono); font-weight:600;">${Math.round(q_tot)} kJ</td>
-                    <td style="font-family: var(--font-mono); color: #dc2626;">${Math.round(intens)} kJ/kg</td>
-                    <td style="font-family: var(--font-mono); color: #059669;">${t_sec.toFixed(1)} s</td>
+                    <td>${T}</td>
+                    <td>${sig.toFixed(3)}</td>
+                    <td>${rel.toFixed(3)}</td>
+                    <td>${calc.toFixed(3)}</td>
+                    <td>${Math.round(sens)}</td>
+                    <td>${Math.round(des)}</td>
+                    <td>${Math.round(tot)}</td>
+                    <td>${Math.round(intensity)}</td>
                 `;
                 tbody.appendChild(tr);
             });
         }
 
-        // Attach Event Listeners
-        Object.values(inputs).forEach(inEl => inEl.addEventListener('input', updateModel));
-
-        window.onload = function() {
-            initAllCharts();
-            updateModel();
+        // Chart Initialization & Rendering
+        const chartColors = {
+            cyan: '#06b6d4',
+            cyanTrans: 'rgba(6, 182, 212, 0.1)',
+            emerald: '#10b981',
+            emeraldTrans: 'rgba(16, 185, 129, 0.1)',
+            amber: '#f59e0b',
+            amberTrans: 'rgba(245, 158, 11, 0.1)',
+            rose: '#f43f5e',
+            grid: '#172338',
+            tick: '#64748b'
         };
+
+        const commonChartOptions = {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                x: {
+                    grid: { color: chartColors.grid },
+                    ticks: { color: chartColors.tick, font: { family: 'JetBrains Mono', size: 10 } }
+                },
+                y: {
+                    grid: { color: chartColors.grid },
+                    ticks: { color: chartColors.tick, font: { family: 'JetBrains Mono', size: 10 } }
+                }
+            }
+        };
+
+        function initCharts() {
+            // Chart 1: Adsorption Curve
+            chartAds = new Chart(document.getElementById('chart-adsorption'), {
+                type: 'line',
+                data: { labels: [], datasets: [{ borderColor: chartColors.cyan, backgroundColor: chartColors.cyanTrans, fill: true, tension: 0.3, pointRadius: 0, data: [] }] },
+                options: commonChartOptions
+            });
+
+            // Chart 2: Calcite Curve
+            chartCalc = new Chart(document.getElementById('chart-calcite'), {
+                type: 'line',
+                data: { labels: [], datasets: [{ borderColor: chartColors.emerald, backgroundColor: chartColors.emeraldTrans, fill: true, tension: 0.3, pointRadius: 0, data: [] }] },
+                options: commonChartOptions
+            });
+
+            // Chart 3: Sigmoid Curve
+            chartSigm = new Chart(document.getElementById('chart-sigmoid'), {
+                type: 'line',
+                data: { labels: [], datasets: [{ borderColor: chartColors.amber, backgroundColor: chartColors.amberTrans, fill: true, tension: 0.3, pointRadius: 0, data: [] }] },
+                options: commonChartOptions
+            });
+
+            // Chart 4: Energy Intensity Curve
+            chartEnergy = new Chart(document.getElementById('chart-energy'), {
+                type: 'line',
+                data: { labels: [], datasets: [{ borderColor: chartColors.rose, tension: 0.3, pointRadius: 0, data: [] }] },
+                options: commonChartOptions
+            });
+
+            // Chart 5: Dual Axis Adsorption & Calcite
+            chartDualAds = new Chart(document.getElementById('chart-dual-ads'), {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: 'CO2 Captured (kg)', borderColor: chartColors.cyan, tension: 0.3, pointRadius: 0, yAxisID: 'y' },
+                        { label: 'CaCO3 Yield (kg)', borderColor: chartColors.emerald, tension: 0.3, pointRadius: 0, yAxisID: 'y1' }
+                    ]
+                },
+                options: {
+                    ...commonChartOptions,
+                    plugins: { legend: { display: true, labels: { color: '#cbd5e1', font: { family: 'JetBrains Mono', size: 10 } } } },
+                    scales: {
+                        x: commonChartOptions.scales.x,
+                        y: { ...commonChartOptions.scales.y, title: { display: true, text: 'CO2 (kg)', color: chartColors.cyan, font: { size: 10 } } },
+                        y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: chartColors.emerald, font: { family: 'JetBrains Mono', size: 10 } }, title: { display: true, text: 'CaCO3 (kg)', color: chartColors.emerald, font: { size: 10 } } }
+                    }
+                }
+            });
+
+            // Chart 6: Dual Axis Desorption & Energy Intensity
+            chartDualTherm = new Chart(document.getElementById('chart-dual-therm'), {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        { label: 'Release Fraction', borderColor: chartColors.amber, tension: 0.3, pointRadius: 0, yAxisID: 'y' },
+                        { label: 'Energy Intensity (kJ/kg)', borderColor: chartColors.rose, tension: 0.3, pointRadius: 0, yAxisID: 'y1' }
+                    ]
+                },
+                options: {
+                    ...commonChartOptions,
+                    plugins: { legend: { display: true, labels: { color: '#cbd5e1', font: { family: 'JetBrains Mono', size: 10 } } } },
+                    scales: {
+                        x: commonChartOptions.scales.x,
+                        y: { ...commonChartOptions.scales.y, max: 1.0, title: { display: true, text: 'Fraction', color: chartColors.amber, font: { size: 10 } } },
+                        y1: { position: 'right', grid: { drawOnChartArea: false }, ticks: { color: chartColors.rose, font: { family: 'JetBrains Mono', size: 10 } }, title: { display: true, text: 'kJ / kg CO2', color: chartColors.rose, font: { size: 10 } } }
+                    }
+                }
+            });
+        }
+
+        function updateCharts(data) {
+            // Time Series (0 to state.time min)
+            const tLabels = [];
+            const adsData = [];
+            const calcData = [];
+            const steps = 30;
+            const dt = state.time / steps;
+
+            for (let i = 0; i <= steps; i++) {
+                const t = Math.round(i * dt);
+                tLabels.push(t + 'm');
+                const q = data.q_eq * (1 - Math.exp(-CONSTANTS.K_ADS * t));
+                adsData.push(Number(q.toFixed(3)));
+                calcData.push(Number((q * data.sigma * 2.274).toFixed(3)));
+            }
+
+            // Temp Sweep (60 to 140 deg C)
+            const tRange = [];
+            const sigData = [];
+            const energyData = [];
+
+            for (let T = 60; T <= 140; T += 4) {
+                tRange.push(T + 'C');
+                const sig = 1 / (1 + Math.exp(-CONSTANTS.K_SIGMA * (T - CONSTANTS.T_MID)));
+                sigData.push(Number(sig.toFixed(3)));
+                const rel = data.q_t * sig;
+                const tot = (state.m_mof * CONSTANTS.C_MOF * (T - CONSTANTS.T_AMBIENT)) + ((data.q_t / CONSTANTS.M_CO2) * CONSTANTS.DH_DES);
+                const intens = rel > 0 ? tot / rel : 0;
+                energyData.push(Math.round(intens));
+            }
+
+            // Update Chart 1
+            chartAds.data.labels = tLabels;
+            chartAds.data.datasets[0].data = adsData;
+            chartAds.update('none');
+
+            // Update Chart 2
+            chartCalc.data.labels = tLabels;
+            chartCalc.data.datasets[0].data = calcData;
+            chartCalc.update('none');
+
+            // Update Chart 3
+            chartSigm.data.labels = tRange;
+            chartSigm.data.datasets[0].data = sigData;
+            chartSigm.update('none');
+
+            // Update Chart 4
+            chartEnergy.data.labels = tRange;
+            chartEnergy.data.datasets[0].data = energyData;
+            chartEnergy.update('none');
+
+            // Update Chart 5 (Dual Axis Adsorption & Mineralization)
+            chartDualAds.data.labels = tLabels;
+            chartDualAds.data.datasets[0].data = adsData;
+            chartDualAds.data.datasets[1].data = calcData;
+            chartDualAds.update('none');
+
+            // Update Chart 6 (Dual Axis Sigmoid & Intensity)
+            chartDualTherm.data.labels = tRange;
+            chartDualTherm.data.datasets[0].data = sigData;
+            chartDualTherm.data.datasets[1].data = energyData;
+            chartDualTherm.update('none');
+        }
+
+        // View Mode Switcher
+        function setChartMode(mode) {
+            state.chartMode = mode;
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            const wrapper = document.getElementById('charts-wrapper');
+            const c1 = document.getElementById('box-c1');
+            const c2 = document.getElementById('box-c2');
+            const c3 = document.getElementById('box-c3');
+            const c4 = document.getElementById('box-c4');
+            const c5 = document.getElementById('box-c5');
+            const c6 = document.getElementById('box-c6');
+
+            if (mode === 'focused') {
+                event.target.classList.add('active');
+                wrapper.className = 'charts-container grid-4';
+                c1.style.display = 'flex';
+                c2.style.display = 'flex';
+                c3.style.display = 'flex';
+                c4.style.display = 'flex';
+                c5.style.display = 'none';
+                c6.style.display = 'none';
+            } else if (mode === 'dual') {
+                event.target.classList.add('active');
+                wrapper.className = 'charts-container grid-2';
+                c1.style.display = 'none';
+                c2.style.display = 'none';
+                c3.style.display = 'none';
+                c4.style.display = 'none';
+                c5.style.display = 'flex';
+                c6.style.display = 'flex';
+            } else if (mode === 'full') {
+                event.target.classList.add('active');
+                wrapper.className = 'charts-container grid-6';
+                c1.style.display = 'flex';
+                c2.style.display = 'flex';
+                c3.style.display = 'flex';
+                c4.style.display = 'flex';
+                c5.style.display = 'flex';
+                c6.style.display = 'flex';
+            }
+        }
+
+        function setRegenTemp(temp) {
+            state.temp = temp;
+            document.getElementById('input-temp').value = temp;
+            requestAnimationFrame(updateUI);
+        }
+
+        // Setup Event Listeners with Debounce
+        function setupEventListeners() {
+            const inputs = [
+                { id: 'input-mass', key: 'm_mof', isFloat: true },
+                { id: 'input-co2', key: 'c_co2', isFloat: true },
+                { id: 'input-time', key: 'time', isFloat: false },
+                { id: 'input-temp', key: 'temp', isFloat: false },
+                { id: 'input-volume', key: 'volume', isFloat: false }
+            ];
+
+            inputs.forEach(item => {
+                const el = document.getElementById(item.id);
+                el.addEventListener('input', (e) => {
+                    state[item.key] = item.isFloat ? parseFloat(e.target.value) : parseInt(e.target.value, 10);
+                    requestAnimationFrame(updateUI);
+                });
+            });
+        }
+
+        // Initialize on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            setupEventListeners();
+            updateUI();
+        });
     </script>
 </body>
 </html>
