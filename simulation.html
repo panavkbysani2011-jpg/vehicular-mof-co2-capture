@@ -1,0 +1,1091 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AERO-MOF Simulation: Interactive Adsorption and Mineralization Engine</title>
+    <meta name="description" content="Interactive numerical simulation of diamine-appended Mg-MOF-74 vehicular carbon capture and limewater mineralization across drive cycles.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+    <style>
+        :root {
+            --bg-page: #f8fafc;
+            --bg-surface: #ffffff;
+            --bg-muted: #f1f5f9;
+            --border-subtle: #e2e8f0;
+            --border-strong: #cbd5e1;
+            --text-main: #0f172a;
+            --text-secondary: #334155;
+            --text-muted: #64748b;
+            --accent-primary: #1e3a8a;
+            --accent-primary-hover: #1d4ed8;
+            --accent-mineral: #047857;
+            --accent-mineral-bg: #ecfdf5;
+            --accent-thermal: #b45309;
+            --accent-thermal-bg: #fffbeb;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+            --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06);
+            --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06);
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-page);
+            color: var(--text-secondary);
+            font-family: var(--font-sans);
+            font-size: 14px;
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Top Bar Navigation */
+        header.sim-header {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--border-subtle);
+            height: 64px;
+            display: flex;
+            align-items: center;
+        }
+
+        .header-container {
+            width: 100%;
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .back-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            text-decoration: none;
+            color: var(--text-secondary);
+            font-size: 13px;
+            font-weight: 500;
+            padding: 6px 12px;
+            background-color: var(--bg-muted);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            transition: all 0.15s ease;
+        }
+
+        .back-link:hover {
+            color: var(--text-main);
+            border-color: var(--border-strong);
+        }
+
+        .sim-title {
+            font-weight: 700;
+            font-size: 17px;
+            color: var(--text-main);
+            letter-spacing: -0.3px;
+        }
+
+        .sim-tag {
+            font-size: 11px;
+            font-family: var(--font-mono);
+            font-weight: 500;
+            color: var(--accent-primary);
+            background-color: #eff6ff;
+            padding: 3px 8px;
+            border-radius: var(--radius-sm);
+            border: 1px solid #bfdbfe;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-action {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background-color: #ffffff;
+            border: 1px solid var(--border-strong);
+            color: var(--text-secondary);
+            font-size: 12.5px;
+            font-weight: 500;
+            padding: 7px 14px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+
+        .btn-action:hover {
+            border-color: var(--text-main);
+            color: var(--text-main);
+        }
+
+        .btn-primary-action {
+            background-color: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: #ffffff;
+            font-weight: 600;
+        }
+
+        .btn-primary-action:hover {
+            background-color: var(--accent-primary-hover);
+            border-color: var(--accent-primary-hover);
+            color: #ffffff;
+        }
+
+        /* Simulation Layout */
+        .sim-container {
+            max-width: 1360px;
+            margin: 0 auto;
+            padding: 24px;
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        /* Left Control Sidebar */
+        aside.sim-sidebar {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+            position: sticky;
+            top: 88px;
+        }
+
+        .sidebar-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .sidebar-sub {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            margin-bottom: 20px;
+        }
+
+        .control-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+        }
+
+        .control-label {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .control-value {
+            font-family: var(--font-mono);
+            font-size: 12.5px;
+            font-weight: 600;
+            color: var(--accent-primary);
+            background-color: var(--bg-muted);
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+        }
+
+        .range-slider {
+            width: 100%;
+            height: 6px;
+            -webkit-appearance: none;
+            appearance: none;
+            background: #e2e8f0;
+            border-radius: 3px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        .range-slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background: var(--accent-primary);
+            cursor: pointer;
+            border: 2px solid #ffffff;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+            transition: transform 0.1s ease;
+        }
+
+        .range-slider::-webkit-slider-thumb:hover {
+            transform: scale(1.15);
+        }
+
+        .control-limits {
+            display: flex;
+            justify-content: space-between;
+            font-size: 11px;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            margin-top: 4px;
+        }
+
+        .preset-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 8px;
+        }
+
+        .btn-preset {
+            background-color: var(--bg-muted);
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            font-size: 11.5px;
+            font-weight: 500;
+            padding: 6px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s ease;
+        }
+
+        .btn-preset.active {
+            background-color: #eff6ff;
+            border-color: #3b82f6;
+            color: var(--accent-primary);
+            font-weight: 600;
+        }
+
+        /* Right Content Panel */
+        main.sim-content {
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* KPI Cards Grid */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+        }
+
+        .kpi-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 16px 18px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .kpi-card.highlight-mineral {
+            border-left: 3px solid var(--accent-mineral);
+        }
+
+        .kpi-card.highlight-thermal {
+            border-left: 3px solid var(--accent-thermal);
+        }
+
+        .kpi-card.highlight-blue {
+            border-left: 3px solid var(--accent-primary);
+        }
+
+        .kpi-label {
+            font-size: 11.5px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 6px;
+        }
+
+        .kpi-value {
+            font-family: var(--font-mono);
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+
+        .kpi-sub {
+            font-size: 11.5px;
+            color: var(--text-secondary);
+        }
+
+        /* Chart Panels */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .chart-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .chart-header {
+            display: flex;
+            align-items: baseline;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .chart-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .chart-legend-note {
+            font-size: 11px;
+            font-family: var(--font-mono);
+            color: var(--text-muted);
+        }
+
+        .chart-canvas-wrapper {
+            position: relative;
+            height: 250px;
+            width: 100%;
+        }
+
+        /* Matrix Table */
+        .table-card {
+            background-color: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .table-header-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 14px;
+        }
+
+        .table-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .sim-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 12.5px;
+            font-family: var(--font-mono);
+            text-align: right;
+        }
+
+        .sim-table th {
+            background-color: #0f172a;
+            color: #ffffff;
+            font-weight: 600;
+            padding: 10px 12px;
+            font-size: 11.5px;
+            letter-spacing: 0.2px;
+        }
+
+        .sim-table th:first-child, .sim-table td:first-child {
+            text-align: center;
+        }
+
+        .sim-table td {
+            padding: 9px 12px;
+            border-bottom: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+        }
+
+        .sim-table tr:nth-child(even) {
+            background-color: #fafbfc;
+        }
+
+        .col-mineral {
+            color: var(--accent-mineral) !important;
+            font-weight: 600;
+        }
+
+        /* Equation Box */
+        .math-card {
+            background-color: #ffffff;
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .math-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 12px;
+        }
+
+        .math-box {
+            background-color: var(--bg-muted);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+        }
+
+        .math-box-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .math-formula {
+            font-family: var(--font-mono);
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-main);
+            margin-bottom: 4px;
+        }
+
+        .math-desc {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        @media (max-width: 1080px) {
+            .sim-container {
+                grid-template-columns: 1fr;
+            }
+            aside.sim-sidebar {
+                position: static;
+            }
+            .kpi-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .chart-grid, .math-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header -->
+    <header class="sim-header">
+        <div class="header-container">
+            <div class="header-left">
+                <a href="index.html" class="back-link">&larr; Return to Overview</a>
+                <span class="sim-title">AERO-MOF Simulation Engine</span>
+                <span class="sim-tag">77-Min Drive Cycle</span>
+            </div>
+            <div class="header-actions">
+                <button id="btnReset" class="btn-action">Reset Defaults</button>
+                <button id="btnExport" class="btn-action btn-primary-action">Export Dataset (CSV)</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="sim-container">
+
+        <!-- Controls Sidebar -->
+        <aside class="sim-sidebar">
+            <h2 class="sidebar-title">Simulation Parameters</h2>
+            <p class="sidebar-sub">Adjust inputs to compute kinetics and calcite yield in real time.</p>
+
+            <!-- Sorbent Mass -->
+            <div class="control-group">
+                <div class="control-header">
+                    <label class="control-label" for="sliderMass">Sorbent Mass (M_sorbent)</label>
+                    <span id="valMass" class="control-value">5.0 kg</span>
+                </div>
+                <input type="range" id="sliderMass" class="range-slider" min="1.0" max="10.0" step="0.5" value="5.0">
+                <div class="control-limits">
+                    <span>1.0 kg</span>
+                    <span>10.0 kg</span>
+                </div>
+            </div>
+
+            <!-- Exhaust CO2 Fraction -->
+            <div class="control-group">
+                <div class="control-header">
+                    <label class="control-label" for="sliderCO2">Exhaust CO2 Fraction</label>
+                    <span id="valCO2" class="control-value">13.5%</span>
+                </div>
+                <input type="range" id="sliderCO2" class="range-slider" min="5.0" max="20.0" step="0.5" value="13.5">
+                <div class="control-limits">
+                    <span>5.0%</span>
+                    <span>20.0%</span>
+                </div>
+            </div>
+
+            <!-- Regeneration Temperature -->
+            <div class="control-group">
+                <div class="control-header">
+                    <label class="control-label" for="sliderRegenT">Regeneration Temp (T_regen)</label>
+                    <span id="valRegenT" class="control-value">85 °C</span>
+                </div>
+                <input type="range" id="sliderRegenT" class="range-slider" min="70" max="125" step="1" value="85">
+                <div class="control-limits">
+                    <span>70 °C</span>
+                    <span>125 °C</span>
+                </div>
+                <div class="preset-buttons">
+                    <button type="button" class="btn-preset active" data-temp="85">85 °C (Baseline)</button>
+                    <button type="button" class="btn-preset" data-temp="110">110 °C (Optimized)</button>
+                </div>
+            </div>
+
+            <!-- Slurry Concentration -->
+            <div class="control-group">
+                <div class="control-header">
+                    <label class="control-label" for="sliderSlurry">Limewater Slurry (Ca(OH)2)</label>
+                    <span id="valSlurry" class="control-value">20.0 wt%</span>
+                </div>
+                <input type="range" id="sliderSlurry" class="range-slider" min="5.0" max="30.0" step="1.0" value="20.0">
+                <div class="control-limits">
+                    <span>5.0 wt%</span>
+                    <span>30.0 wt%</span>
+                </div>
+            </div>
+
+            <!-- Drive Cycle Time -->
+            <div class="control-group">
+                <div class="control-header">
+                    <label class="control-label" for="sliderTime">Cycle Duration</label>
+                    <span id="valTime" class="control-value">77 min</span>
+                </div>
+                <input type="range" id="sliderTime" class="range-slider" min="20" max="120" step="1" value="77">
+                <div class="control-limits">
+                    <span>20 min</span>
+                    <span>120 min</span>
+                </div>
+            </div>
+
+            <!-- Exhaust Gas Temp -->
+            <div class="control-group" style="margin-bottom: 0;">
+                <div class="control-header">
+                    <label class="control-label" for="sliderExhaustT">Exhaust Gas Temp</label>
+                    <span id="valExhaustT" class="control-value">450 °C</span>
+                </div>
+                <input type="range" id="sliderExhaustT" class="range-slider" min="250" max="600" step="10" value="450">
+                <div class="control-limits">
+                    <span>250 °C</span>
+                    <span>600 °C</span>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Display Content -->
+        <main class="sim-content">
+
+            <!-- KPI Summary Cards -->
+            <div class="kpi-grid">
+                <div class="kpi-card highlight-blue">
+                    <div class="kpi-label">CO2 Adsorbed on Bed</div>
+                    <div id="kpiAds" class="kpi-value">0.805 kg</div>
+                    <div id="kpiAdsPct" class="kpi-sub">95.4% of equilibrium capacity</div>
+                </div>
+
+                <div class="kpi-card highlight-thermal">
+                    <div class="kpi-label">Thermal Release Fraction</div>
+                    <div id="kpiReleasePct" class="kpi-value">40.1%</div>
+                    <div id="kpiReleaseMass" class="kpi-sub">0.323 kg CO2 desorbed</div>
+                </div>
+
+                <div class="kpi-card highlight-mineral">
+                    <div class="kpi-label">Solid Calcite Formed</div>
+                    <div id="kpiCaCO3" class="kpi-value">0.735 kg</div>
+                    <div id="kpiCaOH" class="kpi-sub">0.544 kg Ca(OH)2 consumed</div>
+                </div>
+
+                <div class="kpi-card">
+                    <div class="kpi-label">Regeneration Heat Duty</div>
+                    <div id="kpiHeatDuty" class="kpi-value">1063 kJ</div>
+                    <div id="kpiHeatTime" class="kpi-sub">55.3 s exhaust heat transfer</div>
+                </div>
+            </div>
+
+            <!-- Interactive Charts Grid -->
+            <div class="chart-grid">
+                <!-- Chart 1: Breakthrough Curve -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <span class="chart-title">Adsorption Breakthrough Curve q(t)</span>
+                        <span class="chart-legend-note">Linear Driving Force Model</span>
+                    </div>
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="chartAdsorption"></canvas>
+                    </div>
+                </div>
+
+                <!-- Chart 2: Thermal Desorption Curve -->
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <span class="chart-title">Sigmoidal Desorption Fraction &sigma;(T)</span>
+                        <span class="chart-legend-note">Midpoint: 90 °C, Slope: 6 °C</span>
+                    </div>
+                    <div class="chart-canvas-wrapper">
+                        <canvas id="chartDesorption"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Multi-Cycle Chart -->
+            <div class="chart-card">
+                <div class="chart-header">
+                    <span class="chart-title">10-Cycle Cumulative Mineralization (CaCO3 Precipitated)</span>
+                    <span class="chart-legend-note">Continuous drive-cycle sequence</span>
+                </div>
+                <div class="chart-canvas-wrapper" style="height: 260px;">
+                    <canvas id="chartMultiCycle"></canvas>
+                </div>
+            </div>
+
+            <!-- Matrix Table -->
+            <div class="table-card">
+                <div class="table-header-bar">
+                    <span class="table-title">Consecutive Drive-Cycle Results Matrix (10 Cycles)</span>
+                    <span style="font-size: 11.5px; color: var(--text-muted); font-family: var(--font-mono);">Ambient Pressure Mineralization</span>
+                </div>
+                <div style="overflow-x: auto;">
+                    <table class="sim-table">
+                        <thead>
+                            <tr>
+                                <th>Cycle</th>
+                                <th>Initial Bed (kg)</th>
+                                <th>Adsorbed (kg)</th>
+                                <th>End Bed (kg)</th>
+                                <th>Release &sigma;</th>
+                                <th>CO2 Desorbed (kg)</th>
+                                <th>Solid CaCO3 (kg)</th>
+                                <th>Cumulative Calcite (kg)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tableBody">
+                            <!-- Populated dynamically via JS -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Mathematical Formulations -->
+            <div class="math-card">
+                <div class="chart-title">Governing Physical Equations</div>
+                <div class="math-grid">
+                    <div class="math-box">
+                        <div class="math-box-title">Adsorption Kinetics (LDF)</div>
+                        <div class="math-formula">dq/dt = k_LDF &bull; (q_e - q)</div>
+                        <div class="math-desc">k_LDF = 0.040 min^-1; q_e = 0.1687 kg/kg sorbent. Evaluates to 95.4% saturation in 77 minutes.</div>
+                    </div>
+                    <div class="math-box">
+                        <div class="math-box-title">Thermal Desorption Sigmoid</div>
+                        <div class="math-formula">&sigma;(T) = 1 / [1 + exp(-(T - 90)/6)]</div>
+                        <div class="math-desc">Gibbs-derived sigmoidal release fraction. Evaluates to 40.1% at 85 °C and 91.7% at 110 °C.</div>
+                    </div>
+                    <div class="math-box">
+                        <div class="math-box-title">Calcite Precipitation</div>
+                        <div class="math-formula">CO2 + Ca(OH)2 &rarr; CaCO3&darr; + H2O</div>
+                        <div class="math-desc">Molar ratio 1:1. 0.323 kg CO2 produces 0.735 kg CaCO3; 0.738 kg CO2 produces 1.678 kg CaCO3.</div>
+                    </div>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Simulation Computation Script -->
+    <script>
+        // Physical Constants
+        const Q_MAX_PER_KG = 0.1687; // kg CO2 / kg MOF at 13.5% CO2
+        const K_LDF = 0.040; // min^-1
+        const SIGMA_T0 = 90.0; // °C
+        const SIGMA_S = 6.0; // °C
+        const CP_MOF = 1.15; // kJ/(kg·K)
+        const DELTA_H_DES = 65.0; // kJ/mol CO2
+        const MOLAR_MASS_CO2 = 0.04401; // kg/mol
+        const MOLAR_MASS_CACO3 = 0.10009; // kg/mol
+        const MOLAR_MASS_CAOH2 = 0.07409; // kg/mol
+        const EXHAUST_HEAT_RATE = 19.2; // kW sensible exhaust heat
+
+        // DOM Elements
+        const sliderMass = document.getElementById('sliderMass');
+        const sliderCO2 = document.getElementById('sliderCO2');
+        const sliderRegenT = document.getElementById('sliderRegenT');
+        const sliderSlurry = document.getElementById('sliderSlurry');
+        const sliderTime = document.getElementById('sliderTime');
+        const sliderExhaustT = document.getElementById('sliderExhaustT');
+
+        const valMass = document.getElementById('valMass');
+        const valCO2 = document.getElementById('valCO2');
+        const valRegenT = document.getElementById('valRegenT');
+        const valSlurry = document.getElementById('valSlurry');
+        const valTime = document.getElementById('valTime');
+        const valExhaustT = document.getElementById('valExhaustT');
+
+        const kpiAds = document.getElementById('kpiAds');
+        const kpiAdsPct = document.getElementById('kpiAdsPct');
+        const kpiReleasePct = document.getElementById('kpiReleasePct');
+        const kpiReleaseMass = document.getElementById('kpiReleaseMass');
+        const kpiCaCO3 = document.getElementById('kpiCaCO3');
+        const kpiCaOH = document.getElementById('kpiCaOH');
+        const kpiHeatDuty = document.getElementById('kpiHeatDuty');
+        const kpiHeatTime = document.getElementById('kpiHeatTime');
+        const tableBody = document.getElementById('tableBody');
+
+        const btnReset = document.getElementById('btnReset');
+        const btnExport = document.getElementById('btnExport');
+        const presetBtns = document.querySelectorAll('.btn-preset');
+
+        let chartAdsorption, chartDesorption, chartMultiCycle;
+
+        // Mathematical Calculation
+        function computeSimulation() {
+            const mass = parseFloat(sliderMass.value);
+            const co2Pct = parseFloat(sliderCO2.value);
+            const regenT = parseFloat(sliderRegenT.value);
+            const slurry = parseFloat(sliderSlurry.value);
+            const timeMin = parseFloat(sliderTime.value);
+            const exhaustT = parseFloat(sliderExhaustT.value);
+
+            // Text displays
+            valMass.textContent = `${mass.toFixed(1)} kg`;
+            valCO2.textContent = `${co2Pct.toFixed(1)}%`;
+            valRegenT.textContent = `${Math.round(regenT)} °C`;
+            valSlurry.textContent = `${slurry.toFixed(1)} wt%`;
+            valTime.textContent = `${Math.round(timeMin)} min`;
+            valExhaustT.textContent = `${Math.round(exhaustT)} °C`;
+
+            // Preset button active state
+            presetBtns.forEach(btn => {
+                const temp = parseInt(btn.getAttribute('data-temp'));
+                if (Math.round(regenT) === temp) {
+                    btn.classList.add('active');
+                } else {
+                    btn.classList.remove('active');
+                }
+            });
+
+            // Single cycle calculations
+            // Equilibrium capacity scaled with CO2 partial pressure
+            const q_e = mass * Q_MAX_PER_KG * (co2Pct / 13.5);
+            const q_t = q_e * (1 - Math.exp(-K_LDF * timeMin));
+            const adsPct = (q_t / q_e) * 100;
+
+            // Sigmoidal desorption
+            const sigma = 1 / (1 + Math.exp(-(regenT - SIGMA_T0) / SIGMA_S));
+            const releasedCO2 = q_t * sigma;
+
+            // Stoichiometric mineralization
+            const molesReleased = releasedCO2 / MOLAR_MASS_CO2;
+            const massCaCO3 = molesReleased * MOLAR_MASS_CACO3;
+            const massCaOH2 = molesReleased * MOLAR_MASS_CAOH2;
+
+            // Heat duty
+            const deltaT = Math.max(0, regenT - 25.0);
+            const sensibleHeat = mass * CP_MOF * deltaT;
+            const desorptionHeat = molesReleased * DELTA_H_DES;
+            const qTotal = sensibleHeat + desorptionHeat;
+            const heatTimeSec = (qTotal / EXHAUST_HEAT_RATE);
+
+            // Update KPIs
+            kpiAds.textContent = `${q_t.toFixed(3)} kg`;
+            kpiAdsPct.textContent = `${adsPct.toFixed(1)}% of equilibrium capacity`;
+            kpiReleasePct.textContent = `${(sigma * 100).toFixed(1)}%`;
+            kpiReleaseMass.textContent = `${releasedCO2.toFixed(3)} kg CO2 desorbed`;
+            kpiCaCO3.textContent = `${massCaCO3.toFixed(3)} kg`;
+            kpiCaOH.textContent = `${massCaOH2.toFixed(3)} kg Ca(OH)2 consumed`;
+            kpiHeatDuty.textContent = `${Math.round(qTotal)} kJ`;
+            kpiHeatTime.textContent = `${heatTimeSec.toFixed(1)} s exhaust heat transfer`;
+
+            // Multi-cycle simulation (10 cycles)
+            const cyclesData = [];
+            let q_current = 0.0;
+            let cumCalcite = 0.0;
+
+            for (let c = 1; c <= 10; c++) {
+                const initialBed = q_current;
+                // Adsorption: approach q_e from initialBed
+                const deltaAds = (q_e - initialBed) * (1 - Math.exp(-K_LDF * timeMin));
+                const endBed = initialBed + deltaAds;
+                const desorbed = endBed * sigma;
+                q_current = endBed - desorbed;
+                const caco3 = (desorbed / MOLAR_MASS_CO2) * MOLAR_MASS_CACO3;
+                cumCalcite += caco3;
+
+                cyclesData.push({
+                    cycle: c,
+                    initial: initialBed,
+                    adsorbed: deltaAds,
+                    end: endBed,
+                    sigma: sigma,
+                    desorbed: desorbed,
+                    caco3: caco3,
+                    cumCalcite: cumCalcite
+                });
+            }
+
+            // Update Table
+            tableBody.innerHTML = '';
+            cyclesData.forEach(row => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${row.cycle}</td>
+                    <td>${row.initial.toFixed(3)}</td>
+                    <td>${row.adsorbed.toFixed(3)}</td>
+                    <td>${row.end.toFixed(3)}</td>
+                    <td>${(row.sigma * 100).toFixed(1)}%</td>
+                    <td>${row.desorbed.toFixed(3)}</td>
+                    <td class="col-mineral">${row.caco3.toFixed(3)}</td>
+                    <td class="col-mineral">${row.cumCalcite.toFixed(3)}</td>
+                `;
+                tableBody.appendChild(tr);
+            });
+
+            // Update Charts
+            updateAdsorptionChart(q_e, timeMin);
+            updateDesorptionChart(regenT);
+            updateMultiCycleChart(cyclesData);
+        }
+
+        // Charts Initialization
+        function initCharts() {
+            // Chart 1: Adsorption Curve
+            const ctxAds = document.getElementById('chartAdsorption').getContext('2d');
+            chartAdsorption = new Chart(ctxAds, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Bed Loading q(t) [kg]',
+                            data: [],
+                            borderColor: '#1e3a8a',
+                            backgroundColor: 'rgba(30, 58, 138, 0.08)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.2
+                        },
+                        {
+                            label: 'Equilibrium Limit q_e',
+                            data: [],
+                            borderColor: '#94a3b8',
+                            borderWidth: 1.5,
+                            borderDash: [5, 5],
+                            fill: false,
+                            pointRadius: 0
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 12, font: { family: 'Inter', size: 11 } } },
+                        tooltip: { mode: 'index', intersect: false }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Time (minutes)', font: { size: 11 } }, grid: { color: '#f1f5f9' } },
+                        y: { title: { display: true, text: 'CO2 Stored (kg)', font: { size: 11 } }, grid: { color: '#f1f5f9' }, beginAtZero: true }
+                    }
+                }
+            });
+
+            // Chart 2: Desorption Sigmoid
+            const ctxDes = document.getElementById('chartDesorption').getContext('2d');
+            chartDesorption = new Chart(ctxDes, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [
+                        {
+                            label: 'Release Fraction σ(T)',
+                            data: [],
+                            borderColor: '#b45309',
+                            backgroundColor: 'rgba(180, 83, 9, 0.08)',
+                            borderWidth: 2,
+                            fill: true,
+                            tension: 0.2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 12, font: { family: 'Inter', size: 11 } } }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Bed Temperature (°C)', font: { size: 11 } }, grid: { color: '#f1f5f9' } },
+                        y: { title: { display: true, text: 'Release Fraction', font: { size: 11 } }, grid: { color: '#f1f5f9' }, min: 0, max: 1.0 }
+                    }
+                }
+            });
+
+            // Chart 3: Multi-Cycle Cumulative
+            const ctxMulti = document.getElementById('chartMultiCycle').getContext('2d');
+            chartMultiCycle = new Chart(ctxMulti, {
+                type: 'bar',
+                data: {
+                    labels: ['C1', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9', 'C10'],
+                    datasets: [
+                        {
+                            label: 'Calcite Precipitated per Cycle (kg)',
+                            data: [],
+                            backgroundColor: '#047857',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Cumulative Calcite Rock (kg)',
+                            data: [],
+                            type: 'line',
+                            borderColor: '#1e3a8a',
+                            borderWidth: 2.5,
+                            fill: false,
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'top', labels: { boxWidth: 12, font: { family: 'Inter', size: 11 } } }
+                    },
+                    scales: {
+                        x: { title: { display: true, text: 'Driving Cycle Number', font: { size: 11 } }, grid: { color: '#f1f5f9' } },
+                        y: { title: { display: true, text: 'Single Cycle CaCO3 (kg)', font: { size: 11 } }, grid: { color: '#f1f5f9' }, beginAtZero: true },
+                        y1: { position: 'right', title: { display: true, text: 'Cumulative CaCO3 (kg)', font: { size: 11 } }, grid: { display: false }, beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        function updateAdsorptionChart(qe, maxTime) {
+            const steps = 30;
+            const dt = maxTime / steps;
+            const labels = [];
+            const dataQ = [];
+            const dataQe = [];
+
+            for (let i = 0; i <= steps; i++) {
+                const t = Math.round(i * dt);
+                labels.push(t);
+                const q = qe * (1 - Math.exp(-K_LDF * t));
+                dataQ.push(parseFloat(q.toFixed(4)));
+                dataQe.push(parseFloat(qe.toFixed(4)));
+            }
+
+            chartAdsorption.data.labels = labels;
+            chartAdsorption.data.datasets[0].data = dataQ;
+            chartAdsorption.data.datasets[1].data = dataQe;
+            chartAdsorption.update();
+        }
+
+        function updateDesorptionChart(activeTemp) {
+            const temps = [];
+            const sigmaData = [];
+
+            for (let T = 60; T <= 130; T += 2) {
+                temps.push(T);
+                const s = 1 / (1 + Math.exp(-(T - SIGMA_T0) / SIGMA_S));
+                sigmaData.push(parseFloat(s.toFixed(3)));
+            }
+
+            chartDesorption.data.labels = temps;
+            chartDesorption.data.datasets[0].data = sigmaData;
+            chartDesorption.update();
+        }
+
+        function updateMultiCycleChart(cyclesData) {
+            const singleCalcite = cyclesData.map(d => parseFloat(d.caco3.toFixed(3)));
+            const cumCalcite = cyclesData.map(d => parseFloat(d.cumCalcite.toFixed(3)));
+
+            chartMultiCycle.data.datasets[0].data = singleCalcite;
+            chartMultiCycle.data.datasets[1].data = cumCalcite;
+            chartMultiCycle.update();
+        }
+
+        // Event Listeners
+        [sliderMass, sliderCO2, sliderRegenT, sliderSlurry, sliderTime, sliderExhaustT].forEach(slider => {
+            slider.addEventListener('input', computeSimulation);
+        });
+
+        presetBtns.forEach(btn => {
+            btn.addEventListener('click', () => {
+                const temp = btn.getAttribute('data-temp');
+                sliderRegenT.value = temp;
+                computeSimulation();
+            });
+        });
+
+        btnReset.addEventListener('click', () => {
+            sliderMass.value = 5.0;
+            sliderCO2.value = 13.5;
+            sliderRegenT.value = 85;
+            sliderSlurry.value = 20.0;
+            sliderTime.value = 77;
+            sliderExhaustT.value = 450;
+            computeSimulation();
+        });
+
+        btnExport.addEventListener('click', () => {
+            const rows = [
+                ['Cycle', 'Initial_Bed_kg', 'Adsorbed_kg', 'End_Bed_kg', 'Release_Fraction', 'CO2_Desorbed_kg', 'Solid_CaCO3_kg', 'Cumulative_CaCO3_kg']
+            ];
+            const tableRows = tableBody.querySelectorAll('tr');
+            tableRows.forEach(tr => {
+                const cols = Array.from(tr.querySelectorAll('td')).map(td => td.textContent.trim().replace('%', ''));
+                rows.push(cols);
+            });
+
+            let csvContent = 'data:text/csv;charset=utf-8,' + rows.map(e => e.join(',')).join('\n');
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement('a');
+            link.setAttribute('href', encodedUri);
+            link.setAttribute('download', `AERO_MOF_Simulation_Results_${sliderRegenT.value}C.csv`);
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        });
+
+        // Initialize on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            initCharts();
+            computeSimulation();
+        });
+    </script>
+
+</body>
+</html>

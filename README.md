@@ -7,6 +7,9 @@
 
 An open-access computational modeling framework and interactive web simulation for point-of-origin onboard vehicular carbon capture, coupling diamine-appended metal-organic frameworks (Mg-MOF-74) with passive exhaust waste heat regeneration and ambient limewater mineralization.
 
+- **Live Research Platform**: [Project Homepage](https://panavkbysani2011-jpg.github.io/vehicular-mof-co2-capture/)
+- **Interactive Simulation Engine**: [Launch Online Simulator](https://panavkbysani2011-jpg.github.io/vehicular-mof-co2-capture/simulation.html)
+
 ---
 
 ## Authors and Affiliation
