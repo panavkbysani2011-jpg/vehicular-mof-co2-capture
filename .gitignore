@@ -1,0 +1,28 @@
+# Office temporary lock files
+~$*
+*.tmp
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+
+# Operating System files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# Temporary analysis outputs
+graphify-out/
+
+# Large presentation posters and drafts (kept locally)
+*.pptx
+*.jpeg
+EquationFormattingGuide.pdf
+algorithym.pdf
+Iris research paper.pdf
+Iris Abstract Final.docx
+LAMMPS_Connection_and_Starter.docx
+Synopsis.docx

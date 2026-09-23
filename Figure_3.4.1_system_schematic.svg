@@ -1,0 +1,62 @@
+<svg viewBox="0 0 980 540" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Arial, sans-serif" role="img">
+  <title>Corrected system schematic for the vehicular CO2 capture unit</title>
+  <desc>Exhaust enters a MOF bed wrapped by a coaxial exhaust heat exchanger; cleaned gas leaves to the tailpipe; on regeneration, concentrated CO2 passes through an insulated line into an insulated limewater tank with a fine-bubble diffuser, forming solid calcium carbonate at the base. No compressor or storage tank.</desc>
+  <defs>
+    <marker id="a2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#475569"/></marker>
+    <marker id="ah" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#ea580c"/></marker>
+    <style>
+      .t{fill:#0f172a;font-size:13px;font-weight:700;}
+      .s{fill:#334155;font-size:11.5px;}
+      .eq{fill:#1e293b;font-size:11px;font-family:'JetBrains Mono',Consolas,monospace;}
+      .cap{fill:#64748b;font-size:11px;font-style:italic;}
+      .stage{fill:#0f172a;font-size:12.5px;font-weight:700;}
+    </style>
+  </defs>
+  <rect x="0" y="0" width="980" height="540" fill="#ffffff"/>
+  <text x="490" y="30" text-anchor="middle" class="t" font-size="17">Figure 3.4.1  Integrated Capture Unit (Rhino build reference)</text>
+  <rect x="24" y="232" width="120" height="34" rx="6" fill="#94a3b8"/>
+  <text x="84" y="254" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">Exhaust inlet</text>
+  <text x="84" y="288" text-anchor="middle" class="s">hot gas, 300-600&#176;C</text>
+  <text x="84" y="304" text-anchor="middle" class="s">5-15% CO&#8322;</text>
+  <path d="M144,249 L188,249" stroke="#ea580c" stroke-width="6" fill="none" marker-end="url(#ah)"/>
+  <rect x="196" y="150" width="250" height="200" rx="16" fill="#fff7ed" stroke="#fb923c" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="321" y="170" text-anchor="middle" fill="#c2410c" font-size="11" font-weight="700">coaxial exhaust heat exchanger</text>
+  <rect x="224" y="186" width="194" height="132" rx="14" fill="#dbeafe" stroke="#2563eb" stroke-width="2"/>
+  <text x="321" y="214" text-anchor="middle" class="t">MOF bed</text>
+  <text x="321" y="232" text-anchor="middle" class="s">diamine-Mg-MOF-74</text>
+  <text x="321" y="250" text-anchor="middle" class="s">(packed, 5 kg)</text>
+  <text x="321" y="276" text-anchor="middle" class="eq">2(&#8211;NH&#8322;)+CO&#8322;</text>
+  <text x="321" y="292" text-anchor="middle" class="eq">&#8651; carbamate</text>
+  <path d="M321,186 L321,120 L470,120" stroke="#475569" stroke-width="2" fill="none" marker-end="url(#a2)"/>
+  <text x="396" y="112" text-anchor="middle" class="s">cleaned gas &#8594; tailpipe</text>
+  <path d="M446,250 L560,250" stroke="#475569" stroke-width="2.5" fill="none" marker-end="url(#a2)"/>
+  <text x="503" y="240" text-anchor="middle" class="cap">concentrated CO&#8322;</text>
+  <text x="503" y="266" text-anchor="middle" class="cap">insulated line (on regen.)</text>
+  <rect x="572" y="120" width="250" height="270" rx="14" fill="#f8fafc" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <text x="697" y="138" text-anchor="middle" fill="#64748b" font-size="11" font-weight="700">thermal insulation</text>
+  <rect x="596" y="150" width="202" height="220" rx="12" fill="#ffffff" stroke="#0f172a" stroke-width="2"/>
+  <path d="M598,196 H796 V356 a10,10 0 0 1 -10,10 H608 a10,10 0 0 1 -10,-10 Z" fill="#bae6fd"/>
+  <text x="697" y="180" text-anchor="middle" class="t">Limewater tank</text>
+  <text x="697" y="216" text-anchor="middle" class="s">Ca(OH)&#8322; 20% slurry</text>
+  <rect x="660" y="338" width="74" height="12" rx="3" fill="#475569"/>
+  <text x="697" y="332" text-anchor="middle" class="cap">fine-bubble diffuser</text>
+  <circle cx="675" cy="320" r="5" fill="#fff" stroke="#38bdf8"/>
+  <circle cx="690" cy="300" r="4" fill="#fff" stroke="#38bdf8"/>
+  <circle cx="705" cy="312" r="6" fill="#fff" stroke="#38bdf8"/>
+  <circle cx="718" cy="288" r="4" fill="#fff" stroke="#38bdf8"/>
+  <circle cx="688" cy="270" r="5" fill="#fff" stroke="#38bdf8"/>
+  <circle cx="708" cy="252" r="4" fill="#fff" stroke="#38bdf8"/>
+  <rect x="600" y="350" width="194" height="14" fill="#cbd5e1"/>
+  <circle cx="620" cy="357" r="2" fill="#94a3b8"/><circle cx="640" cy="359" r="2" fill="#94a3b8"/><circle cx="665" cy="357" r="2" fill="#94a3b8"/><circle cx="700" cy="359" r="2" fill="#94a3b8"/><circle cx="735" cy="357" r="2" fill="#94a3b8"/><circle cx="765" cy="359" r="2" fill="#94a3b8"/>
+  <text x="697" y="384" text-anchor="middle" class="eq">CaCO&#8323;(s) settles at base</text>
+  <text x="697" y="232" text-anchor="middle" class="eq">CO&#8322;+Ca(OH)&#8322;</text>
+  <text x="697" y="248" text-anchor="middle" class="eq">&#8594; CaCO&#8323;+H&#8322;O</text>
+  <line x1="40" y1="430" x2="940" y2="430" stroke="#e2e8f0" stroke-width="1.5"/>
+  <text x="321" y="456" text-anchor="middle" class="stage" fill="#2563eb">Stage 1 &#183; Adsorption</text>
+  <text x="321" y="474" text-anchor="middle" class="s">CO&#8322; binds to the MOF</text>
+  <text x="503" y="456" text-anchor="middle" class="stage" fill="#c2410c">Stage 2 &#183; Regeneration</text>
+  <text x="503" y="474" text-anchor="middle" class="s">exhaust heat drives TSA release</text>
+  <text x="730" y="456" text-anchor="middle" class="stage" fill="#0e7490">Stage 3 &#183; Mineralisation</text>
+  <text x="730" y="474" text-anchor="middle" class="s">CO&#8322; locked as solid CaCO&#8323;</text>
+  <text x="490" y="510" text-anchor="middle" class="cap">No compressor, CO&#8322; storage tank, or external transfer. Limewater is the terminal sink (corrects the earlier Tinkercad model).</text>
+</svg>

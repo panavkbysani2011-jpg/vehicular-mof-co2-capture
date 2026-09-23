@@ -1,0 +1,49 @@
+================================================================================
+NHSJS ONLINE SUBMISSION METADATA & DECLARATIONS
+National High School Journal of Science (https://nhsjs.com/submission-guidelines/)
+================================================================================
+
+1. MANUSCRIPT TITLE:
+Onboard Capture and Mineralisation of Vehicle Exhaust CO₂ Using Diamine-Appended Mg-MOF-74 and Limewater: A Conceptual and Simulation Study
+
+2. AUTHORS & AFFILIATIONS:
+Lead Author: Advik Harihar
+Institution: 10x International School, Mysore, Karnataka, India
+
+Co-Author: Panav K Bysani
+Institution: 10x International School, Mysore, Karnataka, India
+
+Chemistry Mentor: Yash Verma
+Institution: 10x International School, Mysore, Karnataka, India
+
+3. ABSTRACT (Exactly 225 words excluding headings; 229 words including headings):
+Background/Objective: Rising vehicular CO₂ emissions accelerate global climate change, yet conventional onboard carbon capture remains impractical due to severe weight and safety penalties from high-pressure compressed-gas storage. This study proposes and evaluates a passive onboard capture-and-mineralization architecture designed to eliminate compressed-gas storage by coupling temperature-swing adsorption with aqueous carbonation.
+
+Methods: We formulated a continuous, time-stepped numerical model coupling a 5.0 kg packed bed of diamine-appended Mg-MOF-74, a passive coaxial exhaust heat exchanger driving thermal regeneration, and an unpressurized 30 L limewater bubbler (20 wt% Ca(OH)₂ slurry). Dynamic bed adsorption kinetics, Gibbs-derived sigmoidal thermal desorption, and stoichiometric calcite precipitation were evaluated over a representative 77-minute driving cycle using empirical literature parameters.
+
+Results: Under 13.5% exhaust CO₂, the 5.0 kg bed captures 0.805 kg CO₂ (95.4% equilibrium saturation). Exhaust waste heat passively supplies the 1063 kJ regeneration duty in under 55 seconds without electrical input. Thermal desorption liberates 0.323 kg CO₂ at 85 °C (40.1% release) and 0.738 kg CO₂ at 110 °C (91.7% release), precipitating 0.735 kg to 1.678 kg of permanent solid calcite (CaCO₃). The 46.0 kg wet system induces a minimal 0.68 kPa back-pressure and an estimated 3.07% fuel economy penalty.
+
+Conclusions: Pairing cooperative chemisorption in diamine-appended MOFs with ambient limewater mineralization provides an unpressurized, thermodynamically viable foundation for mobile carbon capture, demonstrating that onboard exhaust decarbonization is physically integrable and identifying operational windows for upcoming prototype testing.
+
+4. KEYWORDS:
+Carbon capture, metal-organic frameworks, Mg-MOF-74, vehicle exhaust, limewater mineralization, temperature-swing adsorption, calcium carbonate
+
+5. DECLARATIONS (Written in Our First-Person Perspective):
+Originality: The concept, system design, and simulation model presented in this paper are our own original work. We researched, designed, and developed this project under the mentorship of our Chemistry Mentor, Yash Verma. All external data, literature constants, and comparative baselines are drawn from peer-reviewed publications and cited accordingly.
+
+Authors' Contributions: We, Advik Harihar and Panav K Bysani, collaboratively developed the conceptual system architecture, mathematical formulations, numerical modeling, interactive simulation code, and manuscript preparation under the guidance of our Chemistry Mentor, Yash Verma.
+
+Data and Code Availability: The complete simulation model, analytical scripts, and datasets are provided as open-source resources in the accompanying project repository for independent verification. All parameters and their sources are listed in the paper.
+
+Conflicts of Interest: We declare no conflicts of interest.
+
+6. AUTHOR BIOGRAPHIES:
+Advik Harihar:
+Advik Harihar is a student at 10x International School, Mysore. His academic interests center on investing, stocks, mathematics, chemistry, and computational modeling of adsorption equations and thermodynamic behavior in metal-organic frameworks (MOFs).
+
+Panav K Bysani:
+Panav K Bysani is a student at 10x International School, Mysore. His academic interests center on business, applied chemistry, and environmental science, with a focus on practical decarbonization solutions and clean technology.
+
+Yash Verma (Chemistry Mentor):
+Yash Verma holds a Master of Technology (M.Tech) from the Indian Institute of Technology (IIT) Kharagpur, where he worked as a Project Scientist for two years. His research interests span mathematical modeling and chemical engineering. He currently serves as a Chemistry Faculty member at 10x International School, Mysore, teaching IB Middle Years Programme (MYP) and IB Diploma Programme (DP) Chemistry.
+================================================================================

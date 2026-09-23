@@ -1,0 +1,56 @@
+<svg viewBox="0 0 760 900" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Arial, sans-serif" role="img">
+  <title>Figure 3.4.2 Simulation algorithm, logic only</title>
+  <desc>A top-to-bottom flowchart of the Python simulation: read inputs, compute equilibrium loading, time loop for loading, regeneration energy, temperature-swing release, limewater mineralisation, and outputs. Parameter values are kept in Table 3.3.</desc>
+  <defs>
+    <marker id="arr" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M0,0 L10,5 L0,10 z" fill="#64748b"/>
+    </marker>
+    <style>
+      .box{fill:#f1f5f9;stroke:#cbd5e1;stroke-width:1.5;}
+      .loop{fill:#eff6ff;stroke:#2563eb;stroke-width:2;}
+      .out{fill:#ecfdf5;stroke:#10b981;stroke-width:1.5;}
+      .h{fill:#0f172a;font-size:15px;font-weight:700;}
+      .lbl{fill:#334155;font-size:13px;font-weight:600;}
+      .eq{fill:#1e293b;font-size:13.5px;font-family:'JetBrains Mono',Consolas,monospace;}
+      .sub{font-size:9.5px;}
+      .flow{stroke:#64748b;stroke-width:1.6;fill:none;}
+      .cap{fill:#64748b;font-size:11px;font-style:italic;}
+    </style>
+  </defs>
+  <rect x="0" y="0" width="760" height="900" fill="#ffffff"/>
+  <text x="380" y="32" text-anchor="middle" class="h" font-size="17">Figure 3.4.2  Simulation Algorithm (logic)</text>
+  <text x="380" y="50" text-anchor="middle" class="cap">Parameter values are listed in Table 3.3, not on the chart.</text>
+  <rect x="230" y="68" width="300" height="46" rx="10" class="box"/>
+  <text x="380" y="89" text-anchor="middle" class="lbl">Read input parameters</text>
+  <text x="380" y="106" text-anchor="middle" class="cap">(Table 3.3)</text>
+  <path class="flow" d="M380,114 L380,138" marker-end="url(#arr)"/>
+  <rect x="150" y="140" width="460" height="64" rx="10" class="box"/>
+  <text x="380" y="162" text-anchor="middle" class="lbl">Compute equilibrium loading</text>
+  <text x="380" y="188" text-anchor="middle" class="eq">q<tspan class="sub" baseline-shift="sub">eq</tspan> = m<tspan class="sub" baseline-shift="sub">MOF</tspan> &#183; Q<tspan class="sub" baseline-shift="sub">max</tspan> &#183; (C<tspan class="sub" baseline-shift="sub">CO2</tspan> / C<tspan class="sub" baseline-shift="sub">ref</tspan>)</text>
+  <path class="flow" d="M380,204 L380,228" marker-end="url(#arr)"/>
+  <rect x="150" y="230" width="460" height="76" rx="10" class="loop"/>
+  <text x="380" y="253" text-anchor="middle" class="lbl" fill="#1d4ed8">Time loop:  t = 0 &#8594; 77 min,  step &#916;t = 1 min</text>
+  <text x="380" y="284" text-anchor="middle" class="eq">q(t) = q<tspan class="sub" baseline-shift="sub">eq</tspan> &#183; (1 &#8722; e<tspan class="sub" baseline-shift="super">&#8722;k&#183;t</tspan>)</text>
+  <path class="flow" d="M380,306 L380,330" marker-end="url(#arr)"/>
+  <rect x="150" y="332" width="460" height="104" rx="10" class="box"/>
+  <text x="380" y="354" text-anchor="middle" class="lbl">Regeneration energy per cycle</text>
+  <text x="380" y="378" text-anchor="middle" class="eq">Q<tspan class="sub" baseline-shift="sub">sensible</tspan> = m<tspan class="sub" baseline-shift="sub">MOF</tspan> &#183; c<tspan class="sub" baseline-shift="sub">MOF</tspan> &#183; &#916;T</text>
+  <text x="380" y="400" text-anchor="middle" class="eq">Q<tspan class="sub" baseline-shift="sub">desorb</tspan> = n<tspan class="sub" baseline-shift="sub">CO2</tspan> &#183; &#916;H<tspan class="sub" baseline-shift="sub">des</tspan></text>
+  <text x="380" y="422" text-anchor="middle" class="eq">Q<tspan class="sub" baseline-shift="sub">total</tspan> = Q<tspan class="sub" baseline-shift="sub">sensible</tspan> + Q<tspan class="sub" baseline-shift="sub">desorb</tspan></text>
+  <path class="flow" d="M380,436 L380,460" marker-end="url(#arr)"/>
+  <rect x="150" y="462" width="460" height="84" rx="10" class="box"/>
+  <text x="380" y="484" text-anchor="middle" class="lbl">Temperature-swing release (sigmoid)</text>
+  <text x="380" y="510" text-anchor="middle" class="eq">&#963;(T) = 1 / (1 + e<tspan class="sub" baseline-shift="super">&#8722;k&#963;(T&#8722;T&#8344;)</tspan>)</text>
+  <text x="380" y="532" text-anchor="middle" class="eq">m<tspan class="sub" baseline-shift="sub">released</tspan> = m<tspan class="sub" baseline-shift="sub">adsorbed</tspan> &#183; &#963;(T)</text>
+  <path class="flow" d="M380,546 L380,570" marker-end="url(#arr)"/>
+  <rect x="150" y="572" width="460" height="64" rx="10" class="box"/>
+  <text x="380" y="594" text-anchor="middle" class="lbl">Mineralisation in limewater</text>
+  <text x="380" y="620" text-anchor="middle" class="eq">m<tspan class="sub" baseline-shift="sub">CaCO3</tspan> = n<tspan class="sub" baseline-shift="sub">released</tspan> &#183; M<tspan class="sub" baseline-shift="sub">CaCO3</tspan></text>
+  <path class="flow" d="M380,636 L380,660" marker-end="url(#arr)"/>
+  <rect x="120" y="662" width="520" height="118" rx="10" class="out"/>
+  <text x="380" y="684" text-anchor="middle" class="lbl" fill="#047857">Outputs tracked across the run</text>
+  <text x="380" y="708" text-anchor="middle" class="eq">1.  Cumulative CO&#8322; captured  (from q(t))</text>
+  <text x="380" y="730" text-anchor="middle" class="eq">2.  Regeneration energy  Q<tspan class="sub" baseline-shift="sub">sensible</tspan>, Q<tspan class="sub" baseline-shift="sub">desorb</tspan>, Q<tspan class="sub" baseline-shift="sub">total</tspan></text>
+  <text x="380" y="752" text-anchor="middle" class="eq">3.  CaCO&#8323; precipitated</text>
+  <text x="380" y="772" text-anchor="middle" class="eq">4.  Ca(OH)&#8322; inventory remaining</text>
+</svg>

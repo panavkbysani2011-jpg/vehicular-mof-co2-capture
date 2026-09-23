@@ -1,0 +1,42 @@
+<svg viewBox="0 0 720 470" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Arial, sans-serif" role="img">
+  <title>Figure 4.1 CO2 adsorption curve over the 77 minute drive cycle</title>
+  <desc>Loading of the MOF bed rises steeply then flattens, reaching 0.805 kg (95.4% of the 0.844 kg equilibrium) at 77 minutes.</desc>
+  <style>
+    .ax{stroke:#94a3b8;stroke-width:1.5;}
+    .grid{stroke:#e2e8f0;stroke-width:1;}
+    .lbl{fill:#334155;font-size:12px;}
+    .axt{fill:#475569;font-size:13px;font-weight:600;}
+    .h{fill:#0f172a;font-size:16px;font-weight:700;}
+    .cap{fill:#64748b;font-size:11px;font-style:italic;}
+  </style>
+  <rect x="0" y="0" width="720" height="470" fill="#ffffff"/>
+  <text x="360" y="28" text-anchor="middle" class="h">Figure 4.1  CO&#8322; loading of the MOF bed over the cycle</text>
+  <line class="grid" x1="80" y1="308.9" x2="680" y2="308.9"/>
+  <line class="grid" x1="80" y1="237.8" x2="680" y2="237.8"/>
+  <line class="grid" x1="80" y1="166.7" x2="680" y2="166.7"/>
+  <line class="grid" x1="80" y1="95.6" x2="680" y2="95.6"/>
+  <line x1="80" y1="79.9" x2="680" y2="79.9" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="6 4"/>
+  <text x="676" y="74" text-anchor="end" fill="#b45309" font-size="11.5">q_eq = 0.844 kg (equilibrium)</text>
+  <path d="M80,380 L132.5,306.8 L185,251.3 L237.5,209.3 L290,177.7 L342.5,153.9 L395,135.7 L447.5,122.2 L500,111.9 L552.5,104.1 L605,98.1 L657.5,93.8 L657.5,380 Z" fill="#2563eb" fill-opacity="0.10"/>
+  <path d="M80,380 L132.5,306.8 L185,251.3 L237.5,209.3 L290,177.7 L342.5,153.9 L395,135.7 L447.5,122.2 L500,111.9 L552.5,104.1 L605,98.1 L657.5,93.8" fill="none" stroke="#2563eb" stroke-width="2.5"/>
+  <circle cx="657.5" cy="93.8" r="4.5" fill="#2563eb"/>
+  <line x1="657.5" y1="93.8" x2="657.5" y2="380" stroke="#2563eb" stroke-width="1" stroke-dasharray="3 3"/>
+  <rect x="470" y="118" width="196" height="40" rx="6" fill="#eff6ff" stroke="#bfdbfe"/>
+  <text x="568" y="134" text-anchor="middle" fill="#1d4ed8" font-size="12" font-weight="700">q(77) = 0.805 kg</text>
+  <text x="568" y="150" text-anchor="middle" fill="#1d4ed8" font-size="11.5">95.4% of equilibrium</text>
+  <line class="ax" x1="80" y1="60" x2="80" y2="380"/>
+  <line class="ax" x1="80" y1="380" x2="680" y2="380"/>
+  <text x="72" y="384" text-anchor="end" class="lbl">0</text>
+  <text x="72" y="312.9" text-anchor="end" class="lbl">0.2</text>
+  <text x="72" y="241.8" text-anchor="end" class="lbl">0.4</text>
+  <text x="72" y="170.7" text-anchor="end" class="lbl">0.6</text>
+  <text x="72" y="99.6" text-anchor="end" class="lbl">0.8</text>
+  <text x="28" y="220" text-anchor="middle" class="axt" transform="rotate(-90 28 220)">CO&#8322; adsorbed (kg)</text>
+  <text x="80" y="398" text-anchor="middle" class="lbl">0</text>
+  <text x="230" y="398" text-anchor="middle" class="lbl">20</text>
+  <text x="380" y="398" text-anchor="middle" class="lbl">40</text>
+  <text x="530" y="398" text-anchor="middle" class="lbl">60</text>
+  <text x="657.5" y="398" text-anchor="middle" class="lbl">77</text>
+  <text x="380" y="420" text-anchor="middle" class="axt">Time (min)</text>
+  <text x="380" y="450" text-anchor="middle" class="cap">q(t) = q_eq (1 &#8722; e^(&#8722;kt)),  k = 0.04 min&#8315;&#185;,  m_MOF = 5 kg,  inlet CO&#8322; = 13.5%</text>
+</svg>
